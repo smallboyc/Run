@@ -6,8 +6,9 @@
     <title>User</title>
   </head>
   <body>
-    <h1>Welcome {{username}}</h1>
-    <a href="">Last Training</a>
+    <h1>Welcome {{username}} !</h1>
+    <p>On espère que tu as la forme !</p>
+    <a href="{{ url_for('select_program') }}">Programmes</a>
     <a href="">Next Training</a>
     <a href="">Planning</a>
   </body>
