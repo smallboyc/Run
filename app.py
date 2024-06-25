@@ -37,21 +37,20 @@ def add_user():
      finally:
           mycursor.close()
      
-     return redirect(url_for('/users/', username=username))
+     return redirect(url_for('get_user', username=username))
 
-@app.route('/users<username>')
-def get_users(username):
+@app.route('/users/<username>')
+def get_user(username):
      mycursor = mydb.cursor()
-     query = f'SELECT * FROM users WHERE username={username}'
-     mycursor.execute(query)
+     query = 'SELECT * FROM users WHERE username=%s'
+     mycursor.execute(query, (username,))
      user = mycursor.fetchone()
      mycursor.close()
     
      if user:
-        return jsonify(user)
+        return render_template('user.html', username=user[1])
      else:
-        return jsonify({"error": "User not found"}), 404
-
+        return jsonify({"error": "Utilisateur non trouvé"}), 404
 
 if __name__ == "__main__":
     app.run(debug=True)
