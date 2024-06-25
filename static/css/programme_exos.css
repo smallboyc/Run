@@ -25,18 +25,22 @@ h2 {
 }
 
 .exercise-item {
+    display: block;
     background-color: white;
     border: 1px solid #ddd;
     border-radius: 8px;
     padding: 20px;
     margin-bottom: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-decoration: none;  /* Remove underline from links */
+    color: black;           /* Set text color */
     transition: transform 0.3s, box-shadow 0.3s;
 }
 
 .exercise-item:hover {
     transform: scale(1.02);
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    background-color: #f9f9f9; /* Light background on hover */
 }
 
 .exercise-item p {
