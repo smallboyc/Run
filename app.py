@@ -51,6 +51,39 @@ def get_user(username):
         return render_template('user.html', username=user[1])
      else:
         return jsonify({"error": "Utilisateur non trouvé"}), 404
+     
+
+
+
+#Programmes
+@app.route('/select_program')
+def select_program():
+    mycursor = mydb.cursor()
+    mycursor.execute("SELECT idprogram, name_program FROM program")
+    programs = mycursor.fetchall()
+    mycursor.close()
+    return render_template('select_program.html', programs=programs)
+
+@app.route('/add_program_to_user', methods=['POST'])
+def add_program_to_user():
+    program_id = request.form['program_id']
+    return redirect(url_for('select_exercise', program_id=program_id))
+
+
+
+#Sélectionner les exercices d'un programme
+@app.route('/select_exercise/<int:program_id>')
+def select_exercise(program_id):
+    mycursor = mydb.cursor()
+    mycursor.execute("SELECT idexercises, name FROM exercises")
+    exercises = mycursor.fetchall()
+    mycursor.close()
+    return render_template('select_exercise.html', exercises=exercises, program_id=program_id)
+
+
+
+
+
 
 if __name__ == "__main__":
     app.run(debug=True)
