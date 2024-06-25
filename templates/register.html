@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../static/css/style.css" />
+    <title>Register</title>
+  </head>
+  <body>
+    <img src="../static/img/Logo_Bleu.svg" alt="" />
+    <section class="register">
+      <h1>Register</h1>
+      <form action="/add_user" method="post">
+        <div class="input_element">
+          <label for="username">Username :</label>
+          <input type="text" name="username" id="username" required />
+        </div>
+        <div class="input_element">
+          <label for="password_hash">Password :</label>
+          <input type="text" name="password_hash" id="password_hash" required />
+        </div>
+        <div class="input_element">
+          <label for="email">E-mail :</label>
+          <input type="text" name="email" id="email" required />
+        </div>
+        <input class="btn" type="submit" value="Register" />
+      </form>
+    </section>
+  </body>
+</html>
