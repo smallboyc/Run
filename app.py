@@ -85,24 +85,21 @@ def complete_user():
     return render_template('questions.html')
 
 
-@app.route('/users/firstname', methods=['POST'])
+@app.route('/users/questionnaire', methods=['POST'])
 def questions():
     weight = request.form["weight"]
     height = request.form["height"]
     animal = request.form["animal"]
-    mycursor = mydb.cursor()
-    try:
-        query = "INSERT INTO user_details (weight, height, animal) VALUES (%s, %s, %s)"
-        val = (weight, height, animal)
-        mycursor.execute(query, val)
-        mydb.commit()
-    except mysql.connector.Error as err:
-        print(f"Error: {err}")
-        mydb.rollback()
-    finally:
-        mycursor.close()
 
-    return redirect(url_for('get_user', iduser=iduser))
+    mycursor = mydb.cursor()
+    sql = "UPDATE users SET weight=%s, height=%s, animal=%s WHERE iduser=%s"
+    val = (weight, height, animal) 
+
+    mycursor.execute(sql, val)
+    mydb.commit()
+    mycursor.close()
+
+    return redirect(url_for('get_user', iduser=user[0]))
 
 
 @app.route('/users/<iduser>')
