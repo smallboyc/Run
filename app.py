@@ -1,4 +1,4 @@
-from flask import Flask, render_template, jsonify, request, redirect, url_for
+from flask import Flask, render_template, jsonify, request, redirect, url_for, flash
 import mysql.connector
 
 import config
@@ -12,6 +12,7 @@ mydb = mysql.connector.connect(
      database=config.Config.DB_NAME
 )
 
+
 @app.route('/')
 def root():
     return render_template('index.html')
@@ -22,33 +23,70 @@ def register():
 
 @app.route('/add_user', methods=['POST'])
 def add_user():
-     username = request.form["username"]
+     mycursor = mydb.cursor()
+     firstname = request.form["firstname"]
+     surname = request.form["surname"]
      password_hash = request.form["password_hash"]
      email = request.form["email"]
-     mycursor = mydb.cursor()
-     try:
-          sql = "INSERT INTO users (iduser, username, password_hash, email) VALUES (%s, %s, %s, %s)"
-          val = (0, username, password_hash, email)
-          mycursor.execute(sql, val)
+
+     mycursor.execute("SELECT * FROM users WHERE email=%s", [email])
+     if mycursor is not None :
+        try:
+            print('email existant')
+        except mysql.connector.Error as err:
+            print(f"Error: {err}")
+            mydb.rollback()
+        finally:
+            mycursor.close()
+        return render_template('error.html')
+     else:
+        try:
+            query = "INSERT INTO users (iduser, firstname, surname, email, password_hash) VALUES (%s, %s, %s, %s)"
+            val = (0, firstname, surname, password_hash, email)
+            mycursor.execute(query, val)
+            mydb.commit()
+
+        except mysql.connector.Error as err:
+            print(f"Error: {err}")
+            mydb.rollback()
+        finally:
+            mycursor.close()
+        
+        return redirect(url_for('complete_user'))
+
+@app.route('/users/questions')
+def complete_user():
+     return render_template('questions.html')
+
+@app.route('/users/firstname', methods=['POST'])
+def questions():
+    weight = request.form["weight"]
+    height = request.form["height"]
+    animal = request.form["animal"]
+    mycursor = mydb.cursor()
+    try:
+          query = "INSERT INTO users (weight, height, animal) VALUES (%s, %s, %s)"
+          val = (weight, height, animal)
+          mycursor.execute(query, val)
           mydb.commit()
-     except mysql.connector.Error as err:
+    except mysql.connector.Error as err:
           print(f"Error: {err}")
           mydb.rollback()
-     finally:
+    finally:
           mycursor.close()
      
-     return redirect(url_for('get_user', username=username))
+    return redirect(url_for('get_user', iduser=iduser))
 
-@app.route('/users/<username>')
-def get_user(username):
+@app.route('/users/<iduser>')
+def get_user(iduser):
      mycursor = mydb.cursor()
-     query = 'SELECT * FROM users WHERE username=%s'
-     mycursor.execute(query, (username,))
+     query = 'SELECT * FROM users WHERE iduser=%s'
+     mycursor.execute(query, (iduser,))
      user = mycursor.fetchone()
      mycursor.close()
     
      if user:
-        return render_template('user.html', username=user[1])
+        return render_template('user.html', iduser=user[0])
      else:
         return jsonify({"error": "Utilisateur non trouvé"}), 404
      

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <img src="../static/img/Logo_Bleu.svg" alt="" />
+    <section class="questions">
+      <h1>Questionnaire</h1>
+      <form action="/users/questions" method="post">
+        <div class="input_element">
+          <label for="weight">Poids :</label>
+          <input type="text" name="weight" id="weight" required />
+        </div>
+        <div class="input_element">
+          <label for="height">Taille :</label>
+          <input type="text" name="height" id="height" required />
+        </div>
+        <div class="input_element">
+          <label for="animal">Animal Préféré :</label>
+          <input type="text" name="animal" id="animal" required />
+        </div>
+        <input class="btn" type="submit" value="Complete" />
+      </form>
+    </section>
+</body>
+</html>
