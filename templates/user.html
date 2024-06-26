@@ -1,15 +1,64 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>User</title>
-  </head>
-  <body>
-    <h1>Welcome {{username}} !</h1>
-    <p>On espère que tu as la forme !</p>
-    <a href="{{ url_for('select_program') }}">Programmes</a>
-    <a href="">Next Training</a>
-    <a href="">Planning</a>
-  </body>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard</title>  
+    <link rel="stylesheet" href="../static/css/user.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Welcome {{firstname}}</h1>
+        </div>
+        <div class="main-content">
+            <div class="panel left-panel">
+                <div>
+                    <h2>My Program</h2>
+                    <p>Name programme</p>
+                    <div class="exercise-list">
+                        <a href="exercices.html" class="exercise-item">
+                            <p><strong>Nom Exercice:</strong> description</p>
+                        </a>
+                        <a href="exercices.html" class="exercise-item">
+                            <p><strong>Nom Exercice:</strong> description</p>
+                        </a>
+                        <a href="exercices.html" class="exercise-item">
+                            <p><strong>Nom Exercice:</strong> description</p>
+                        </a>
+                        <a href="exercices.html" class="exercise-item">
+                            <p><strong>Nom Exercice:</strong> description</p>
+                        </a>
+                        <a href="exercices.html" class="exercise-item">
+                            <p><strong>Nom Exercice:</strong> description</p>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="panel right-panel">
+                <div class="progress-section">
+                    <div class="progress-circle" data-percentage="55">
+                        <svg class="progress-ring" width="120" height="120">
+                            <circle class="progress-ring__circle" stroke="green" stroke-width="8" fill="transparent" r="54" cx="60" cy="60"/>
+                        </svg>
+                        <div class="progress-text">74%</div>
+                    </div>
+                    <div>
+                        <h2>Bilan général</h2>
+                        <p>Résultats/Progression</p>
+                    </div>
+                    
+                </div>
+                
+            </div>
+            
+        </div>
+        <div class="buttons">
+            <button class="next-exercise-button">Next Exercice</button>
+            <button class="next-exercise-button">Update progression</button>
+        </div>
+        
+    </div>
+    <script src="../static/js/progress.js"></script>
+</body>
 </html>

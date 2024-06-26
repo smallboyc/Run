@@ -1,9 +1,13 @@
-from flask import Flask, render_template, jsonify, request, redirect, url_for, flash
+from flask import Flask, render_template, jsonify, request, redirect, url_for, flash, session
 import mysql.connector
-
+import bcrypt
 import config
 
+
+
 app = Flask(__name__)
+app.secret_key = config.Config.secret_key
+
 
 mydb = mysql.connector.connect(
      host=config.Config.DB_HOST,
@@ -17,35 +21,54 @@ mydb = mysql.connector.connect(
 def root():
     return render_template('index.html')
 
+
 @app.route('/register')
 def register():
     return render_template('register.html')
 
+
+@app.route('/login')
+def login():
+    return render_template('login.html')
+
+
+@app.route('/login_user', methods =['POST'])
+def login_user():
+    mycursor = mydb.cursor(dictionary=True)
+    email = request.form["email"]
+    password = request.form["password"]
+
+    mycursor.execute("SELECT * FROM users WHERE email=%s AND password_hash=%s", (email, password))
+    user = mycursor.fetchone()
+
+    if user:
+        session['user_id'] = user['iduser']
+        session['user_email'] = user['email']
+        return redirect(url_for('get_user', iduser=user['iduser']))
+    else:
+        return render_template('error.html', message="Email ou mot de passe incorrect")
+
+
 @app.route('/add_user', methods=['POST'])
 def add_user():
-     mycursor = mydb.cursor()
-     firstname = request.form["firstname"]
-     surname = request.form["surname"]
-     password_hash = request.form["password_hash"]
-     email = request.form["email"]
+    mycursor = mydb.cursor(dictionary=True)
+    firstname = request.form["firstname"]
+    surname = request.form["surname"]
+    password = request.form["password"]
+    email = request.form["email"]
 
-     mycursor.execute("SELECT * FROM users WHERE email=%s", [email])
-     if mycursor is not None :
+    mycursor.execute("SELECT * FROM users WHERE email=%s", (email,))
+    user = mycursor.fetchone()
+    
+    if user:
+        return render_template('error.html', message="Email existant")
+    else:
         try:
-            print('email existant')
-        except mysql.connector.Error as err:
-            print(f"Error: {err}")
-            mydb.rollback()
-        finally:
-            mycursor.close()
-        return render_template('error.html')
-     else:
-        try:
-            query = "INSERT INTO users (iduser, firstname, surname, email, password_hash) VALUES (%s, %s, %s, %s)"
-            val = (0, firstname, surname, password_hash, email)
+            password_hash = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+            query = "INSERT INTO users (firstname, surname, email, password_hash) VALUES (%s, %s, %s, %s)"
+            val = (firstname, surname, email, password_hash.decode('utf-8'))
             mycursor.execute(query, val)
             mydb.commit()
-
         except mysql.connector.Error as err:
             print(f"Error: {err}")
             mydb.rollback()
@@ -54,9 +77,11 @@ def add_user():
         
         return redirect(url_for('complete_user'))
 
+
 @app.route('/users/questions')
 def complete_user():
      return render_template('questions.html')
+
 
 @app.route('/users/firstname', methods=['POST'])
 def questions():
@@ -76,6 +101,7 @@ def questions():
           mycursor.close()
      
     return redirect(url_for('get_user', iduser=iduser))
+
 
 @app.route('/users/<iduser>')
 def get_user(iduser):

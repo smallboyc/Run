@@ -3,14 +3,16 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link
-      rel="stylesheet"
-      href="{{ url_for('static', filename='css/style.css') }}"
-    />
-    <title>Run</title>
+    <link rel="stylesheet" href="../static/css/style.css" />
+    <title>Register</title>
   </head>
   <body>
     <img src="../static/img/Logo_Bleu.svg" alt="" />
-    <a href="/register">Enregistrez-vous</a>
+    <section class="register">
+      <h1>Run</h1>
+      <p>Bienvenue dans Run, un programme de sport d'exception pour améliorer vos performances physiques comme mentales.</p>
+      <a href="{{ url_for('register') }}">S'inscrire</a>
+      <a href="{{ url_for('login') }}">Se connecter</a>
+    </section>
   </body>
 </html>
