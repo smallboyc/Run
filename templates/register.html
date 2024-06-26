@@ -1,60 +1,37 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Exercice</title>
-    <link rel="stylesheet" href="../static/css/register.css">
-</head>
-<body>
+    <link rel="stylesheet" href="../static/css/register.css" />
+  </head>
+  <body>
     <div class="container">
-        <h2 class="title">Créez votre compte</h2>
-        
+      <h2 class="title">Créez votre compte</h2>
+      <form action="/register_user" method="post">
         <div class="inputs">
-            <div class="input-group">
-                
-                <p class="champs"> Name :</p>
-                <input type="text" id="name" name="name" required>
-                
-            </div>
-            <div class="input-group">
-                
-                <p class="champs"> Email :</p>
-                <input type="email" id="email" name="email" required>
-                
-            </div>
-            <div class="input-group">
-                <p class="champs"> Password :</p>
-                
-                <input type="password" id="password" name="password" required>
-                
-            </div>
-            <div class="input-group">
-              <p class="champs"> Confirm password :</p>
-              <input type="password" id="password" name="password" required>
+          <div class="input-group">
+            <label class="champs" for="firstname">Prénom :</label>
+            <input type="text" name="firstname" id="firstname" required />
           </div>
           <div class="input-group">
-            <p class="champs"> Height :</p>
-            <input type="number" id="height" name="height" required>
+            <label class="champs" for="surname">Nom :</label>
+            <input type="text" name="surname" id="surname" required />
           </div>
           <div class="input-group">
-            <p class="champs"> Weight :</p>
-            <input type="number" id="weight" name="weight" required>
+            <label class="champs" for="password">Password :</label>
+            <input type="password" name="password" id="password" required />
           </div>
           <div class="input-group">
-            <p class="champs"> Favorite animal :</p>
-            <select id="animal" name="animal" required>
-                <option value="guepard"> Guépard </option>
-                <option value="lion"> Lion </option>
-                <option value="loup"> Loup </option>
-            </select>
+            <label class="champs" for="email">E-mail :</label>
+            <input type="email" name="email" id="email" required />
           </div>
-            <div class="buttons">
-                <button type="submit"> Créer compte </button>
-            </div>
-            
+          <div class="buttons">
+            <input type="submit" value="Register" />
+          </div>
         </div>
-        
+      </form>
     </div>
-</body>
+  </body>
 </html>
