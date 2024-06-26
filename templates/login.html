@@ -1,36 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Exercice</title>
-    <link rel="stylesheet" href="../static/css/login.css">
-</head>
-<body>
+    <link rel="stylesheet" href="../static/css/login.css" />
+  </head>
+  <body>
     <div class="container">
-        <h2 class="title">Connectez-vous</h2>
+      <h2 class="title">Connectez-vous</h2>
 
-        <form action="/login_user" method="post">
-            <div class="inputs">
-                <div class="input-group">
-                    
-                    <p> Email :</p>
-                    <input type="email" id="email" name="email" required>
-                    
-                </div>
-                <div class="input-group">
-                    <p> Password :</p>
-                    
-                    <input type="password" id="password" name="password" required>
-                    
-                </div>
-                <div class="buttons">
-                    <button type="submit" value="login">Se connecter</button>
-                </div>
-                
-            </div>
-        </form>
-        
+      <form action="/login_user" method="post">
+        <div class="inputs">
+          <div class="input-group">
+            <label class="champs" for="firstname">Prénom :</label>
+            <input type="text" name="firstname" id="firstname" required />
+          </div>
+          <div class="input-group">
+            <label class="champs" for="surname">Nom :</label>
+            <input type="text" name="surname" id="surname" required />
+          </div>
+          <div class="input-group">
+            <label class="champs" for="password">Password :</label>
+            <input type="password" name="password" id="password" required />
+          </div>
+          <div class="input-group">
+            <label class="champs" for="email">E-mail :</label>
+            <input type="email" name="email" id="email" required />
+          </div>
+          <div class="buttons">
+            <input type="submit" value="Login" />
+          </div>
+        </div>
+      </form>
     </div>
-</body>
+  </body>
 </html>

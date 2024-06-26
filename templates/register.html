@@ -3,32 +3,35 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="../static/css/style.css" />
-    <title>Register</title>
+    <title>Exercice</title>
+    <link rel="stylesheet" href="../static/css/register.css" />
   </head>
   <body>
-    <img src="../static/img/Logo_Bleu.svg" alt="" />
-    <section class="register">
-      <h1>Register</h1>
+    <div class="container">
+      <h2 class="title">Créez votre compte</h2>
       <form action="/register_user" method="post">
-        <div class="input_element">
-          <label for="firstname">Prénom :</label>
-          <input type="text" name="firstname" id="firstname" required />
+        <div class="inputs">
+          <div class="input-group">
+            <label class="champs" for="firstname">Prénom :</label>
+            <input type="text" name="firstname" id="firstname" required />
+          </div>
+          <div class="input-group">
+            <label class="champs" for="surname">Nom :</label>
+            <input type="text" name="surname" id="surname" required />
+          </div>
+          <div class="input-group">
+            <label class="champs" for="password">Password :</label>
+            <input type="password" name="password" id="password" required />
+          </div>
+          <div class="input-group">
+            <label class="champs" for="email">E-mail :</label>
+            <input type="email" name="email" id="email" required />
+          </div>
+          <div class="buttons">
+            <input type="submit" value="Register" />
+          </div>
         </div>
-        <div class="input_element">
-          <label for="surname">Nom :</label>
-          <input type="text" name="surname" id="surname" required />
-        </div>
-        <div class="input_element">
-          <label for="password">Password :</label>
-          <input type="password" name="password" id="password" required />
-        </div>
-        <div class="input_element">
-          <label for="email">E-mail :</label>
-          <input type="email" name="email" id="email" required />
-        </div>
-        <input class="btn" type="submit" value="Register" />
       </form>
-    </section>
+    </div>
   </body>
 </html>
