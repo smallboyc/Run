@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS `mydb`.`users` (
   `firstname` VARCHAR(45) NULL,
   `surname` VARCHAR(45) NULL,
   `email` VARCHAR(45) NULL,
-  `password_hash` VARCHAR(45) NULL,
+  `password_hash` VARCHAR(60) NULL,
   `weight` FLOAT NULL,
   `height` FLOAT NULL,
   `animal` VARCHAR(45) NULL,

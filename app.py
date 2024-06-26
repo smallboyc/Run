@@ -39,10 +39,10 @@ def login_user():
     email = request.form["email"]
     password = request.form["password"]
 
-    mycursor.execute("SELECT * FROM users WHERE email=%s AND password_hash=%s", (email, password))
+    mycursor.execute("SELECT * FROM users WHERE email=%s", (email,))
     user = mycursor.fetchone()
 
-    if user:
+    if user and bcrypt.checkpw(password.encode('utf-8'), user['password_hash'].encode('utf-8')):
         session['user_id'] = user['iduser']
         session['user_email'] = user['email']
         return redirect(url_for('get_user', iduser=user['iduser']))
@@ -107,14 +107,13 @@ def questions():
 
 @app.route('/users/<iduser>')
 def get_user(iduser):
-     mycursor = mydb.cursor()
-     query = 'SELECT * FROM users WHERE iduser=%s'
-     mycursor.execute(query, (iduser,))
+     mycursor = mydb.cursor(dictionary=True)
+     mycursor.execute('SELECT firstname, surname, email FROM users WHERE iduser=%s',(iduser,))
      user = mycursor.fetchone()
      mycursor.close()
     
      if user:
-        return render_template('user.html', iduser=user[0])
+        return render_template('user.html', user=user)
      else:
         return jsonify({"error": "Utilisateur non trouvé"}), 404
      
