@@ -1,18 +1,27 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="../static/css/style.css" />
-    <title>Register</title>
-  </head>
-  <body>
-    <img src="../static/img/Logo_Bleu.svg" alt="" />
-    <section class="register">
-      <h1>Run</h1>
-      <p>Bienvenue dans Run, un programme de sport d'exception pour améliorer vos performances physiques comme mentales.</p>
-      <a href="{{ url_for('register') }}">S'inscrire</a>
-      <a href="{{ url_for('login') }}">Se connecter</a>
-    </section>
-  </body>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page d'accueil</title>
+    <link rel="stylesheet" href="../static/css/style.css">
+</head>
+<body>
+  <div class="container">
+      <div class="header">
+          <div class="logo">
+            <img src="../static/img/Logo_Bleu.svg" alt="" />
+          </div>
+          <div class="buttons">
+              <button class="btn" onclick="location.href='{{ url_for('login') }}'">Connexion</button>
+              <button class="btn secondary" onclick="location.href='{{ url_for('register') }}'">Inscription</button>
+          </div>
+      </div>
+      <div class="bande-grise"></div>
+      <div class="content">
+          <h1>Bienvenue sur RUN</h1>
+          <p> Le site de running qui vous permettra d'aller aussi vite que Charles Leclerc</p>
+      </div>
+  </div>
+</body>
 </html>

@@ -75,6 +75,8 @@ def add_user():
     val = (firstname, surname, email, password_hash)
     mycursor.execute(query, val)
     mydb.commit()
+    user_id = mycursor.lastrowid 
+    session['user_id'] = user_id
     mycursor.close()
     print("Utilisateur inséré avec succès")
     return redirect(url_for('complete_user'))
@@ -91,15 +93,17 @@ def questions():
     height = request.form["height"]
     animal = request.form["animal"]
 
+    user_id = session.get('user_id')
+    
     mycursor = mydb.cursor()
     sql = "UPDATE users SET weight=%s, height=%s, animal=%s WHERE iduser=%s"
-    val = (weight, height, animal) 
+    val = (weight, height, animal, user_id) 
 
     mycursor.execute(sql, val)
     mydb.commit()
     mycursor.close()
 
-    return redirect(url_for('get_user', iduser=user[0]))
+    return redirect(url_for('get_user', iduser=user_id))
 
 
 @app.route('/users/<iduser>')

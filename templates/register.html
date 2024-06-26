@@ -1,34 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="../static/css/style.css" />
-    <title>Register</title>
-  </head>
-  <body>
-    <img src="../static/img/Logo_Bleu.svg" alt="" />
-    <section class="register">
-      <h1>Register</h1>
-      <form action="/add_user" method="post">
-        <div class="input_element">
-          <label for="firstname">Prénom :</label>
-          <input type="text" name="firstname" id="firstname" required />
-        </div>
-        <div class="input_element">
-          <label for="surname">Nom :</label>
-          <input type="text" name="surname" id="surname" required />
-        </div>
-        <div class="input_element">
-          <label for="password">Password :</label>
-          <input type="password" name="password" id="password" required />
-        </div>
-        <div class="input_element">
-          <label for="email">E-mail :</label>
-          <input type="email" name="email" id="email" required />
-        </div>
-        <input class="btn" type="submit" value="Register" />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exercice</title>
+    <link rel="stylesheet" href="../static/css/register.css">
+</head>
+<body>
+    <div class="container">
+        <h2 class="title">Créez votre compte</h2>
+        <form action="/add_user" method="post">
+          <div class="inputs">
+              <div class="input-group">
+                  
+                  <p class="champs"> Nom :</p>
+                  <input type="text" id="surname" name="surname" required>
+                  
+              </div>
+              <div class="input-group">
+                  
+                <p class="champs"> Prénom :</p>
+                <input type="text" id="firstname" name="firstname" required>
+                
+            </div>
+              <div class="input-group">
+                  
+                  <p class="champs"> Email :</p>
+                  <input type="email" id="email" name="email" required>
+                  
+              </div>
+              <div class="input-group">
+
+                  <p class="champs"> Password :</p>
+                  <input type="password" id="password" name="password" required>   
+
+              </div>
+              <div class="input-group">
+
+                <p class="champs"> Confirm password :</p>
+                <input type="password" id="password" name="password" required>
+
+              </div>
+              <div class="buttons">
+
+                  <button type="submit" value="register"> Créer compte </button>
+
+              </div>
+              
+          </div>
       </form>
-    </section>
-  </body>
+    </div>
+</body>
 </html>
