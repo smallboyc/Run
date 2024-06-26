@@ -1,30 +1,60 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="../static/css/style.css" />
-    <title>Register</title>
-  </head>
-  <body>
-    <img src="../static/img/Logo_Bleu.svg" alt="" />
-    <section class="register">
-      <h1>Register</h1>
-      <form action="/add_user" method="post">
-        <div class="input_element">
-          <label for="username">Username :</label>
-          <input type="text" name="username" id="username" required />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exercice</title>
+    <link rel="stylesheet" href="../static/css/register.css">
+</head>
+<body>
+    <div class="container">
+        <h2 class="title">Créez votre compte</h2>
+        
+        <div class="inputs">
+            <div class="input-group">
+                
+                <p class="champs"> Name :</p>
+                <input type="text" id="name" name="name" required>
+                
+            </div>
+            <div class="input-group">
+                
+                <p class="champs"> Email :</p>
+                <input type="email" id="email" name="email" required>
+                
+            </div>
+            <div class="input-group">
+                <p class="champs"> Password :</p>
+                
+                <input type="password" id="password" name="password" required>
+                
+            </div>
+            <div class="input-group">
+              <p class="champs"> Confirm password :</p>
+              <input type="password" id="password" name="password" required>
+          </div>
+          <div class="input-group">
+            <p class="champs"> Height :</p>
+            <input type="number" id="height" name="height" required>
+          </div>
+          <div class="input-group">
+            <p class="champs"> Weight :</p>
+            <input type="number" id="weight" name="weight" required>
+          </div>
+          <div class="input-group">
+            <p class="champs"> Favorite animal :</p>
+            <select id="animal" name="animal" required>
+                <option value="guepard"> Guépard </option>
+                <option value="lion"> Lion </option>
+                <option value="loup"> Loup </option>
+            </select>
+          </div>
+            <div class="buttons">
+                <button type="submit"> Créer compte </button>
+            </div>
+            
         </div>
-        <div class="input_element">
-          <label for="password_hash">Password :</label>
-          <input type="text" name="password_hash" id="password_hash" required />
-        </div>
-        <div class="input_element">
-          <label for="email">E-mail :</label>
-          <input type="text" name="email" id="email" required />
-        </div>
-        <input class="btn" type="submit" value="Register" />
-      </form>
-    </section>
-  </body>
+        
+    </div>
+</body>
 </html>
