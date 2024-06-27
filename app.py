@@ -107,18 +107,17 @@ def get_user(iduser):
         
         if user:
             # Récupérer le programme assigné à l'utilisateur depuis la table de jointure
-            mycursor.execute("SELECT programs.name, programs.id_program FROM programs JOIN users_programs ON programs.id_program=users_programs.id_program JOIN users ON users_programs.iduser=users.iduser WHERE users.iduser=%s",(iduser,))
+            mycursor.execute("SELECT p.name, p.id_program FROM programs p JOIN users_programs up ON p.id_program=up.id_program JOIN users u ON up.iduser=u.iduser WHERE u.iduser=%s",(iduser,))
             program = mycursor.fetchone()
             
             if program:
                  progress = calculate_progress(iduser)
                  program_id = program['id_program']
-                 mycursor.execute("SELECT exercises.name, exercises.description FROM exercises JOIN exercises_programs ON exercises.id_exercise=exercises_programs.id_exercise JOIN programs ON exercises_programs.id_program=programs.id_program WHERE programs.id_program=%s", (program_id,))
-                 exercise = mycursor.fetchone()
+                 mycursor.execute("SELECT exercises.name, exercises.description FROM exercises JOIN exercises_programs ON exercises.id_exercise=exercises_programs.id_exercise JOIN programs ON exercises_programs.id_program=programs.id_program WHERE programs.id_program=%s LIMIT 5", (program_id,))
+                 exercises = mycursor.fetchall()
                  mycursor.close()
-                 if exercise:
-                    return jsonify(exercise)
-                 return render_template('user.html', user=user, program=program, progress = progress)
+                 if exercises:
+                    return render_template('user.html', user=user, program=program, progress = progress, exercises = exercises)
             else:
                 return render_template('error.html', message="Aucun programme assigné à cet utilisateur.")
         else:
@@ -144,20 +143,6 @@ def questions():
     mycursor.close()
 
     return redirect(url_for('programs', iduser=user_id))
-
-
-@app.route('/users/<iduser>')
-def get_user(iduser):
-     mycursor = mydb.cursor(dictionary=True)
-     mycursor.execute('SELECT firstname, surname, email FROM users WHERE iduser=%s',(iduser,))
-     user = mycursor.fetchone()
-     mycursor.close()
-    
-     if user:
-        progress = calculate_progress(iduser)
-        return render_template('user.html', user=user, progress=progress)
-     else:
-        return jsonify('error.html', message="Erreur")
      
 
 #Liste des programmes disponibles
@@ -198,11 +183,11 @@ def calculate_progress(user_id):
     mycursor = mydb.cursor(dictionary=True)
     
     # Nombre total d'exercices dans le programme de l'utilisateur
-    mycursor.execute("SELECT COUNT(*) as total_exercises FROM exercises e JOIN exercises_programs ep ON e.id_exercise = ep.id_exercise JOIN program p ON ep.id_program = p.id_program JOIN users_programs up ON p.id_program = up.id_program WHERE up.iduser = %s", (user_id,))
+    mycursor.execute("SELECT COUNT(*) as total_exercises FROM exercises e JOIN exercises_programs ep ON e.id_exercise = ep.id_exercise JOIN programs p ON ep.id_program = p.id_program JOIN users_programs up ON p.id_program = up.id_program WHERE up.iduser = %s", (user_id,))
     total_exercises = mycursor.fetchone()['total_exercises']
     
     # Nombre d'exercices complétés
-    mycursor.execute("SELECT COUNT(*) as completed_exercises FROM exercises e JOIN exercises_programs ep ON e.id_exercise = ep.id_exercise JOIN program p ON ep.id_program = p.id_program JOIN users_programs up ON p.id_program = up.id_program WHERE up.iduser = %s AND e.completed = TRUE", (user_id,))
+    mycursor.execute("SELECT COUNT(*) as completed_exercises FROM exercises e JOIN exercises_programs ep ON e.id_exercise = ep.id_exercise JOIN programs p ON ep.id_program = p.id_program JOIN users_programs up ON p.id_program = up.id_program WHERE up.iduser = %s AND e.completed = TRUE", (user_id,))
     completed_exercises = mycursor.fetchone()['completed_exercises']
     
     mycursor.close()

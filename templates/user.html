@@ -14,24 +14,14 @@
         <div class="main-content">
             <div class="panel left-panel">
                 <div>
-                    <h2>My Program</h2>
-                    <p>Name programme</p>
+                    <h2>Mon Programme</h2>
+                    <p>{{program.name}}</p>
                     <div class="exercise-list">
+                        {% for exercise in exercises %}
                         <a class="exercise-item">
-                            <p><strong>Nom Exercice:</strong> description</p>
+                            <p><strong>{{exercise.name}}</strong> {{exercise.description}}</p>
                         </a>
-                        <a class="exercise-in-progress">
-                            <p><strong>Nom Exercice:</strong> description</p>
-                        </a>
-                        <a class="exercise-item">
-                            <p><strong>Nom Exercice:</strong> description</p>
-                        </a>
-                        <a class="exercise-item">
-                            <p><strong>Nom Exercice:</strong> description</p>
-                        </a>
-                        <a class="exercise-item">
-                            <p><strong>Nom Exercice:</strong> description</p>
-                        </a>
+                        {% endfor %}
                     </div>
                 </div>
             </div>
