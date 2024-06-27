@@ -60,16 +60,21 @@ h2 {
     font-size: 1em;
 }
 
-.input {
+.input-group input {
     flex: 2;
     padding: 8px;
-    width: 90% !important;
     margin-right: 10px;
     border: 1px solid #ddd;
     border-radius: 5px;
 }
 
-.button_valider {
+.input-group p {
+    flex: 1;
+    font-size: 1em;
+    margin: 0;
+}
+
+.input-group button {
     padding: 10px 20px;
     border: none;
     background-color: #011837;
@@ -79,7 +84,7 @@ h2 {
     transition: background-color 0.3s;
 }
 
-.button_valider:hover {
+.input-group button:hover {
     background-color: #01356d;
 }
 
@@ -114,17 +119,16 @@ h2 {
 
 .buttons {
     display: flex;
-    
     justify-content: center;
     gap: 60px;
     margin-top: 25px;
     align-items: center;
 }
 
-
 .button:hover {
     background-color: #0056b3;
 }
+
 .button:active {
     background-color: #004080;
 }
@@ -150,4 +154,48 @@ h2 {
 
 .button.secondary:active {
     background-color: #e2e2e2;
+}
+
+.action-button {
+    padding: 10px 20px; /* Ajuster la taille du padding selon vos préférences */
+    font-size: 1em; /* Ajuster la taille de la police si nécessaire */
+    border: none;
+    background-color: #011837;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-right: 10px;
+}
+
+.action-button:hover {
+    background-color: #01356d;
+}
+
+/* edit_user.css */
+
+/* Styles pour le select */
+.input-group select {
+    padding: 8px; /* Ajuste le padding intérieur */
+    font-size: 1em; /* Taille de la police */
+    border: 1px solid #ddd; /* Bordure grise */
+    border-radius: 5px; /* Coins arrondis */
+    width: 66.5%; /* Largeur à 100% du conteneur parent */
+    -webkit-appearance: none; /* Désactive l'apparence native de WebKit (Safari, Chrome) */
+    -moz-appearance: none; /* Désactive l'apparence native de Firefox */
+    appearance: none; /* Désactive l'apparence native des autres navigateurs */
+    background-color: #ffffff; /* Couleur de fond */
+    margin-right: 10px;
+}
+
+/* Style au survol */
+.input-group select:hover {
+    border-color: #aaa; /* Couleur de la bordure au survol */
+}
+
+/* Style au focus */
+.input-group select:focus {
+    outline: none; /* Supprime l'outline par défaut */
+    border-color: #0056b3; /* Couleur de la bordure au focus */
+    box-shadow: 0 0 5px rgba(0, 86, 179, 0.5); /* Ombre légère au focus */
 }
