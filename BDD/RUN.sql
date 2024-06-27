@@ -21,16 +21,14 @@ USE `mydb` ;
 -- Table `mydb`.`users`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `mydb`.`users` (
-  `iduser` INT NOT NULL AUTO_INCREMENT,
-  `firstname` VARCHAR(45) NULL,
-  `surname` VARCHAR(45) NULL,
-  `email` VARCHAR(45) NULL,
-  `password_hash` VARCHAR(60) NULL,
-  `weight` FLOAT NULL,
-  `height` FLOAT NULL,
-  `animal` VARCHAR(45) NULL,
-  `created_at` TIMESTAMP NULL,
-  PRIMARY KEY (`iduser`))
+  iduser INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  firstname VARCHAR(45) NULL,
+  surname VARCHAR(45) NULL,
+  email VARCHAR(45) NULL,
+  password_hash VARCHAR(60) NULL,
+  weight FLOAT NULL,
+  height FLOAT NULL,
+  animal VARCHAR(45) NULL)
 ENGINE = InnoDB;
 
 
@@ -38,14 +36,14 @@ ENGINE = InnoDB;
 -- Table `mydb`.`exercises`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `mydb`.`exercises` (
-  `idexercises` INT NOT NULL AUTO_INCREMENT,
-  `firstname` VARCHAR(45) NULL,
-  `description` TEXT(0) NULL,
-  `type` VARCHAR(45) NULL,
-  `time` TIME NULL,
-  `distance` FLOAT NULL,
-  `target` INT NULL,
-  PRIMARY KEY (`idexercises`))
+  id_exercise INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  description TEXT,
+  time INT,
+  distance INT,
+  target_desc TEXT,
+  target_result INT,
+  completed BOOLEAN)
 ENGINE = InnoDB;
 
 
@@ -53,27 +51,44 @@ ENGINE = InnoDB;
 -- Table `mydb`.`program`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `mydb`.`program` (
-  `idprogram` INT NOT NULL AUTO_INCREMENT,
-  `name_program` VARCHAR(45) NULL,
-  `description` TEXT(0) NULL,
-  `exercises_idexercises` INT NOT NULL,
-  `users_iduser` INT NOT NULL,
-  PRIMARY KEY (`idprogram`, `exercises_idexercises`, `users_iduser`),
-  INDEX `fk_program_exercises_idx` (`exercises_idexercises` ASC) VISIBLE,
-  INDEX `fk_program_users1_idx` (`users_iduser` ASC) VISIBLE,
-  CONSTRAINT `fk_program_exercises`
-    FOREIGN KEY (`exercises_idexercises`)
-    REFERENCES `mydb`.`exercises` (`idexercises`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_program_users1`
-    FOREIGN KEY (`users_iduser`)
-    REFERENCES `mydb`.`users` (`iduser`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+  id_program INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  description TEXT,
+  completed BOOLEAN)
 ENGINE = InnoDB;
 
 USE `mydb` ;
+
+CREATE TABLE users_programs (
+    iduser INT,
+    id_program INT,
+    PRIMARY KEY (iduser, id_program),
+    FOREIGN KEY (iduser) REFERENCES users(iduser),
+    FOREIGN KEY (id_program) REFERENCES programs(id_program)
+);
+
+CREATE TABLE exercises_programs (
+    id_exercise INT,
+    id_program INT,
+    PRIMARY KEY (id_exercise, id_program),
+    FOREIGN KEY (id_exercise) REFERENCES exercises(id_exercise),
+    FOREIGN KEY (id_program) REFERENCES programs(id_program)
+);
+
+INSERT INTO exercises (name, description, time, distance, target_desc, target_result, completed) VALUES 
+('Guépard', 'Courir après un inconnu le plus longtemps possible', 0, 0, 'inconnus effrayés', 0, false),
+('Taureau', 'Cours après chaque personne habillée en rouge que tu croises le plus de fois possible', 0, 0, 'nombre de personnes poursuivies', 0, false),
+('Loup', 'Courir le plus loin possible en meute avec tes potes', 0, 0, 'nombre de potes', 0, false);
+
+INSERT INTO programs (name, description, completed) VALUES 
+('VITESSE', 'Aussi rapide que Leclerc', false),
+('PUISSANCE', 'Aussi fort que The Rock', false),
+('ENDURANCE', 'Je sais pas', false);
+
+INSERT INTO exercises_programs (id_exercise, id_program) VALUES 
+(1, 1),
+(2, 2),
+(3, 3);
 
 -- -----------------------------------------------------
 -- Placeholder table for view `mydb`.`view1`

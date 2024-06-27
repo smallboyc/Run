@@ -103,7 +103,7 @@ def questions():
     mydb.commit()
     mycursor.close()
 
-    return redirect(url_for('get_user', iduser=user_id))
+    return redirect(url_for('select_program'))
 
 
 @app.route('/users/<iduser>')
@@ -114,12 +114,11 @@ def get_user(iduser):
      mycursor.close()
     
      if user:
-        return render_template('user.html', user=user)
+        progress = calculate_progress(iduser)
+        return render_template('user.html', user=user, progress=progress)
      else:
         return jsonify({"error": "Utilisateur non trouvé"}), 404
      
-
-
 
 #Programmes
 @app.route('/select_program')
@@ -128,7 +127,8 @@ def select_program():
     mycursor.execute("SELECT idprogram, name_program FROM program")
     programs = mycursor.fetchall()
     mycursor.close()
-    return render_template('select_program.html', programs=programs)
+    return render_template('programmes.html', programs=programs)
+
 
 @app.route('/add_program_to_user', methods=['POST'])
 def add_program_to_user():
@@ -148,7 +148,24 @@ def select_exercise(program_id):
 
 
 
-
+def calculate_progress(user_id):
+    mycursor = mydb.cursor(dictionary=True)
+    
+    # Nombre total d'exercices dans le programme de l'utilisateur
+    mycursor.execute("SELECT COUNT(*) as total_exercises FROM exercises e JOIN exercises_programs ep ON e.id_exercise = ep.id_exercise JOIN program p ON ep.id_program = p.id_program JOIN users_programs up ON p.id_program = up.id_program WHERE uep.iduser = %s", (user_id,))
+    total_exercises = mycursor.fetchone()
+    
+    # Nombre d'exercices complétés
+    mycursor.execute("SELECT COUNT(*) as completed_exercises FROM exercises e JOIN exercises_programs ep ON e.id_exercise = ep.id_exercise JOIN program p ON ep.id_program = p.id_program JOIN users_programs up ON p.id_program = up.id_program WHERE uep.iduser = %s AND completed = TRUE", (user_id,))
+    completed_exercises = mycursor.fetchone()
+    
+    mycursor.close()
+    
+    if total_exercises == 0:
+        return 0
+    
+    progress_percentage = (completed_exercises / total_exercises) * 100
+    return progress_percentage
 
 
 if __name__ == "__main__":
