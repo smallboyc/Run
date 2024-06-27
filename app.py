@@ -87,18 +87,6 @@ def complete_user():
     return render_template('questions.html')
      
 
-# @app.route('/users/<iduser>')
-# def get_user(iduser):
-#      mycursor = mydb.cursor(dictionary=True)
-#      mycursor.execute('SELECT firstname, surname, email FROM users WHERE iduser=%s',(iduser,))
-#      user = mycursor.fetchone()
-#      mycursor.close()
-#      if user: #affiche la page de l'utilisateur
-#         return render_template('user.html', user=user)
-#      else:
-#         return render_template('error.html', message="Erreur")
-     
-
 @app.route('/users/<iduser>')
 def get_user(iduser):
         mycursor = mydb.cursor(dictionary=True)
@@ -107,20 +95,29 @@ def get_user(iduser):
         
         if user:
             # Récupérer le programme assigné à l'utilisateur depuis la table de jointure
-            mycursor.execute("SELECT p.name, p.id_program FROM programs p JOIN users_programs up ON p.id_program=up.id_program JOIN users u ON up.iduser=u.iduser WHERE u.iduser=%s",(iduser,))
+            mycursor.execute("SELECT p.name, p.id_program FROM programs p JOIN users_programs up ON p.id_program=up.id_program JOIN users u ON up.iduser=u.iduser WHERE u.iduser=%s AND p.completed = FALSE",(iduser,))
             program = mycursor.fetchone()
             
             if program:
                  progress = calculate_progress(iduser)
                  program_id = program['id_program']
-                 mycursor.execute("SELECT exercises.name, exercises.description FROM exercises JOIN exercises_programs ON exercises.id_exercise=exercises_programs.id_exercise JOIN programs ON exercises_programs.id_program=programs.id_program WHERE programs.id_program=%s LIMIT 5", (program_id,))
+
+                #Sélectionne tous les exercices
+                 mycursor.execute("SELECT e.id_exercise, e.name, e.description FROM exercises e JOIN exercises_programs ep ON e.id_exercise = ep.id_exercise WHERE ep.id_program = %s ORDER BY e.id_exercise", (program_id,))
                  exercises = mycursor.fetchall()
+
+                #Sélectionne les exercices qui ne sont pas complétés
+                 mycursor.execute("SELECT e.id_exercise, e.name, e.description, e.completed FROM exercises e JOIN exercises_programs ep ON e.id_exercise = ep.id_exercise WHERE ep.id_program = %s AND e.completed = FALSE ORDER BY e.id_exercise", (program_id,))
+                 next_exercise = mycursor.fetchone()
+
                  mycursor.close()
-                 if exercises:
-                    return render_template('user.html', user=user, program=program, progress = progress, exercises = exercises)
+
+                 return render_template('user.html', user=user, program=program, progress = progress, exercises=exercises, next_exercise=next_exercise)
             else:
+                mycursor.close()
                 return render_template('error.html', message="Aucun programme assigné à cet utilisateur.")
         else:
+            mycursor.close()
             return render_template('error.html', message="Utilisateur non trouvé.")
     
 
@@ -159,25 +156,55 @@ def programs(iduser):
 @app.route('/users/<int:iduser>/assign/<int:id_program>')
 def assign_program(iduser, id_program):
         mycursor = mydb.cursor()
-        # Insérez les données dans votre table de jointure
         mycursor.execute("INSERT INTO users_programs (iduser, id_program) VALUES (%s, %s)", (iduser, id_program))
         mydb.commit()
         mycursor.close()
         return redirect(url_for('get_user', iduser=iduser))
 
 
+@app.route('/users/show_exercise/<int:id_exercice>')
+def show_exercise(id_exercise):
 
+    mycursor = mydb.cursor(dictionary=True)
 
-#Sélectionner les exercices d'un programme
-@app.route('/select_exercise/<int:program_id>')
-def select_exercise(program_id):
-    mycursor = mydb.cursor()
-    mycursor.execute("SELECT idexercises, name FROM exercises")
-    exercises = mycursor.fetchall()
+    #Sélectionne l'exercice avec le bon id'
+    mycursor.execute("SELECT name, description, target_desc FROM exercises WHERE id_exercise=%s", (id_exercise,))
+    selected_exercise = mycursor.fetchone()
+
     mycursor.close()
-    return render_template('select_exercise.html', exercises=exercises, program_id=program_id)
+
+    return render_template('exercices.html', selected_exercise=selected_exercise)
 
 
+@app.route('/next_exercise/<int:id_exercise>', methods=['POST'])
+def next_exercise(id_exercise):
+    user_id = session.get('user_id')
+
+    mycursor = mydb.cursor()
+
+    #Mise à jour de l'exercice
+    mycursor.execute("UPDATE exercises SET completed = TRUE WHERE id_exercise = %s" , (id_exercise,))
+
+    #Nombre d'exercices pas complétés restants
+    mycursor.execute("SELECT COUNT(*) as remaining FROM exercises e JOIN exercises_programs ep ON e.id_exercise = ep.id_exercise WHERE ep.id_program = (SELECT id_program FROM users_programs WHERE iduser = %s) AND e.completed = FALSE", (user_id,))
+    remaining_exercises = mycursor.fetchone()
+
+    #Mise à jour de l'état completed de la table program si tous les exercices sont finis
+    if remaining_exercises['remaining'] == 0:
+        mycursor.execute("UPDATE programs SET completed = TRUE WHERE id_program = (SELECT id_program FROM users_programs WHERE iduser = %s)", (user_id,))
+
+    #Sélectionne l'exercice d'après
+    mycursor.execute("SELECT e.id_exercise FROM exercises e JOIN exercises_programs ep ON e.id_exercise = ep.id_exercise WHERE ep.id_program = (SELECT id_program FROM users_programs WHERE iduser = %s) AND e.completed = FALSE ORDER BY e.id_exercise LIMIT 1", (user_id,))
+    next_exercise = mycursor.fetchone()
+
+    mydb.commit()
+    mycursor.close() 
+
+    #Vérifie si il reste des exercices à faire
+    if next_exercise:
+        return redirect(url_for('show_exercise', id_exercise=next_exercise['id_exercise']))
+    else:
+        return redirect(url_for('get_user', iduser=user_id))
 
 def calculate_progress(user_id):
     mycursor = mydb.cursor(dictionary=True)

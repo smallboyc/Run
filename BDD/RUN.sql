@@ -95,7 +95,7 @@ INSERT INTO exercises (name, description, time, distance, target_desc, target_re
 INSERT INTO programs (name, description, completed) VALUES  
 ('VITESSE', 'Aussi rapide que Leclerc', false),
 ('PUISSANCE', 'Aussi fort que The Rock', false),
-('ENDURANCE', 'Je sais pas', false);
+('ENDURANCE', 'Aussi endurant qu un marathonien', false);
 
 INSERT INTO exercises_programs (id_exercise, id_program) VALUES 
 (1, 1),

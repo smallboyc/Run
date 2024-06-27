@@ -15,30 +15,32 @@
         <h2>Jour N°</h2>
         <div class="header">
             <div class="exercise-title">
-                <h3> Nom exercice </h3>
+                <h3>{{selected_exercise.name}}</h3>
                 <h3> Nom programme </h3>
             </div>
-            <p> Descritpion exercice </p>
+            <p>{{selected_exercise.description}}</p>
         </div>
         <div class="inputs">
             <div class="input-group">
-                <label for="temps"> Critère n°1 </label>
+                <label for="temps">Temps :</label>
                 <input type="text" id="temps" name="temps">
                 <button>Valider</button>
             </div>
             <div class="input-group">
-                <label for="distance"> Critère n°2 </label>
+                <label for="distance">Distance : </label>
                 <input type="text" id="distance" name="distance">
                 <button>Valider</button>
             </div>
             <div class="input-group">
-                <label for="obstacle"> Critère n°3 </label>
+                <label for="obstacle">{{selected_exercise.target_desc}}</label>
                 <input type="text" id="obstacle" name="obstacle">
                 <button>Valider</button>
             </div>
         </div>
         <div class="done-button">
-            <button type="submit" value="completed_exercise">FAIT</button>
+            <form action="{{ url_for('next_exercise', id_exercise=selected_exercise.id_exercise) }}" method="post">
+                <button type="submit" value="exercise_completed">FAIT</button>
+            </form>
         </div>
     </div>
 </body>
