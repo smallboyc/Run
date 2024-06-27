@@ -1,27 +1,36 @@
 <!DOCTYPE html>
 <html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Page d'accueil</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-</head>
-<body>
-  <div class="container">
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{{ url_for('static', filename='css/style.css') }}"
+    />
+  </head>
+  <body>
+    <div class="container">
       <div class="header">
-          <div class="logo">
-            <img src="../static/img/Logo_Bleu.svg" alt="" />
-          </div>
-          <div class="buttons">
-              <button class="btn" onclick="location.href='login'">Connexion</button>
-              <button class="btn secondary" onclick="location.href='register'">Inscription</button>
-          </div>
+        <div class="logo">
+          <img src="../static/img/Logo_Bleu.svg" alt="" />
+        </div>
+        <div class="buttons">
+          <button class="btn" onclick="location.href='login'">Connexion</button>
+          <button class="btn secondary" onclick="location.href='register'">
+            Inscription
+          </button>
+        </div>
       </div>
       <div class="bande-grise"></div>
       <div class="content">
-          <h1>Bienvenue sur RUN</h1>
-          <p> Le site de running qui vous permettra d'aller aussi vite que Charles Leclerc</p>
+        <h1>Bienvenue sur RUN</h1>
+        <p>
+          Le site de running qui vous permettra d'aller aussi vite que Charles
+          Leclerc
+        </p>
       </div>
-  </div>
-</body>
+    </div>
+  </body>
 </html>
