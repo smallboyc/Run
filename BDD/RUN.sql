@@ -7,35 +7,54 @@ CREATE TABLE users (
   weight FLOAT NULL,
   height FLOAT NULL,
   animal VARCHAR(45) NULL
-  );
-
-CREATE TABLE exercices (
-    id_exercice INT PRIMARY KEY,
-    nom VARCHAR(100),
-    description TEXT
 );
 
-CREATE TABLE programmes (
-    id_programme INT PRIMARY KEY,
-    nom VARCHAR(100),
-    description TEXT
+CREATE TABLE exercises (
+    id_exercise INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    description TEXT,
+    time INT,
+    distance INT,
+    target_desc TEXT,
+    target_result INT,
+    completed BOOLEAN
 );
 
-CREATE TABLE exercices_programmes (
-    id_exercice INT,
-    id_programme INT,
-    PRIMARY KEY (id_exercice, id_programme),
-    FOREIGN KEY (id_exercice) REFERENCES exercices(id_exercice),
-    FOREIGN KEY (id_programme) REFERENCES programmes(id_programme)
+CREATE TABLE programs (
+    id_program INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    description TEXT,
+    completed BOOLEAN
 );
 
-INSERT INTO exercices (id_exercice, nom, description) VALUES 
-(1, 'Antilope', 'Description de l''exercice 1');
+CREATE TABLE users_programs (
+    iduser INT,
+    id_program INT,
+    PRIMARY KEY (iduser, id_program),
+    FOREIGN KEY (iduser) REFERENCES users(iduser),
+    FOREIGN KEY (id_program) REFERENCES programs(id_program)
+);
 
-INSERT INTO programmes (id_programme, nom, description) VALUES 
-(1, 'VITESSE', 'Description du programme 1'),
-(2, 'PUISSANCE', 'Description du programme 2'),
-(3, 'ENDURANCE', 'Description du programme 3');
+CREATE TABLE exercises_programs (
+    id_exercise INT,
+    id_program INT,
+    PRIMARY KEY (id_exercise, id_program),
+    FOREIGN KEY (id_exercise) REFERENCES exercises(id_exercise),
+    FOREIGN KEY (id_program) REFERENCES programs(id_program)
+);
 
-INSERT INTO exercices_programmes (id_exercice, id_programme) VALUES 
-(1, 1);
+INSERT INTO exercises (name, description, time, distance, target_desc, target_result, completed) VALUES 
+('Guépard', 'Courir après un inconnu le plus longtemps possible', 0, 0, 'inconnus effrayés', 0, false),
+('Taureau', 'Cours après chaque personne habillée en rouge que tu croises le plus de fois possible', 0, 0, 'nombre de personnes poursuivies', 0, false),
+('Loup', 'Courir le plus loin possible en meute avec tes potes', 0, 0, 'nombre de potes', 0, false);
+
+INSERT INTO programs (name, description, completed) VALUES 
+('VITESSE', 'Aussi rapide que Leclerc', false),
+('PUISSANCE', 'Aussi fort que The Rock', false),
+('ENDURANCE', 'Je sais pas', false);
+
+INSERT INTO exercises_programs (id_exercise, id_program) VALUES 
+(1, 1),
+(2, 2),
+(3, 3);
+
