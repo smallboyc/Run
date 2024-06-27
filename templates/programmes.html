@@ -1,42 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Programmes</title>
-    <link rel="stylesheet" href="../static/css/programmes.css">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/programmes.css') }}" />
 </head>
 <body>
     <h1>No time to run!</h1>
     <h2>Choisissez votre programme :</h2>
     <div class="program-container">
-        <a href="programme_exos.html" class="program-card">
-            <h3>PUISSANCE</h3>
-            <p>Puissant comme le Tigre !</p>
-            <ul>
-                <li>Des exercices de renforcement musculaire</li>
-                <li>Des résultats dès la première minute</li>
-                <li>Progrès garantis</li>
-            </ul>
+        {% for program in programs %}
+        <a href="{{ url_for('assign_program', iduser=iduser, id_program=program.id_program) }}" class="program-card">
+            <h3>{{ program.name }}</h3>
+            <p>{{ program.description }}</p>
         </a>
-        <a href="programme_exos.html" class="program-card">
-            <h3>VITESSE</h3>
-            <p>Vif comme le Guépard !</p>
-            <ul>
-                <li>Des exercices pour aller vite</li>
-                <li>Des résultats dès la première minute</li>
-                <li>Progrès rapides</li>
-            </ul>
-        </a>
-        <a href="programme_exos.html" class="program-card">
-            <h3>ENDURANCE</h3>
-            <p>Endurant comme le Léopard !</p>
-            <ul>
-                <li>Des exercices de renfocrement cardiaque</li>
-                <li>Des résultats dès la première seconde</li>
-                <li>Progrès garantis</li>
-            </ul>
-        </a>
+        {% endfor %}
     </div>
 </body>
 </html>

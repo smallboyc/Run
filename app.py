@@ -116,22 +116,18 @@ def questions():
     mydb.commit()
     mycursor.close()
 
-    return redirect(url_for('get_user', iduser=user_id))
+    return redirect(url_for('programs', iduser=user_id))
 
 
-#Programmes
-@app.route('/select_program')
-def select_program():
-    mycursor = mydb.cursor()
-    mycursor.execute("SELECT idprogram, name_program FROM program")
+#Liste des programmes disponibles
+@app.route('/users/<int:iduser>/programs')
+def programs(iduser):
+    mycursor = mydb.cursor(dictionary=True)
+    mycursor.execute("SELECT id_program, name, description FROM programs")
     programs = mycursor.fetchall()
     mycursor.close()
-    return render_template('select_program.html', programs=programs)
-
-@app.route('/add_program_to_user', methods=['POST'])
-def add_program_to_user():
-    program_id = request.form['program_id']
-    return redirect(url_for('select_exercise', program_id=program_id))
+    # return jsonify(programs)
+    return render_template('programmes.html', programs=programs, iduser=iduser)
 
 
 
