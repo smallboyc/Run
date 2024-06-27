@@ -4,25 +4,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link rel="stylesheet" href="../static/css/questions.css">
 </head>
 <body>
-    <img src="../static/img/Logo_Bleu.svg" alt="" />
-    <section class="questions">
+    <!-- <img src="../static/img/Logo_Bleu.svg" alt="" /> -->
+    <section class="container">
       <h1>Questionnaire</h1>
       <form action="/users/questionnaire" method="post">
-        <div class="input_element">
-          <label for="weight">Poids :</label>
+        <div class="input-group">
+          <label class="champs" for="weight">Poids :</label>
           <input type="text" name="weight" id="weight" required />
         </div>
-        <div class="input_element">
-          <label for="height">Taille :</label>
+        <div class="input-group">
+          <label class="champs" for="height">Taille :</label>
           <input type="text" name="height" id="height" required />
         </div>
-        <div class="input_element">
-          <label for="animal">Animal Préféré :</label>
+        <div class="input-group">
+          <label class="champs" for="animal">Animal Préféré :</label>
           <input type="text" name="animal" id="animal" required />
         </div>
-        <input class="btn" type="submit" value="Complete" />
+        <div class="buttons">
+          <input class="button" type="submit" value="Complete" />
+        </div>
       </form>
     </section>
 </body>
