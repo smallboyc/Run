@@ -85,7 +85,7 @@ def register_user():
 @app.route('/users/questions')
 def complete_user():
     return render_template('questions.html')
-
+     
 
 # @app.route('/users/<iduser>')
 # def get_user(iduser):
@@ -107,17 +107,17 @@ def get_user(iduser):
         
         if user:
             # Récupérer le programme assigné à l'utilisateur depuis la table de jointure
-            mycursor.execute("SELECT programs.name, programs.id_program FROM programs JOIN users_programs ON programs.id_program=users_programs.id_program JOIN users ON users_programs.iduser=users.iduser WHERE users.iduser=%s",(iduser,))
+            mycursor.execute("SELECT p.name, p.id_program FROM programs p JOIN users_programs up ON p.id_program=up.id_program JOIN users u ON up.iduser=u.iduser WHERE u.iduser=%s",(iduser,))
             program = mycursor.fetchone()
             
             if program:
+                 progress = calculate_progress(iduser)
                  program_id = program['id_program']
-                 mycursor.execute("SELECT exercises.name, exercises.description FROM exercises JOIN exercises_programs ON exercises.id_exercise=exercises_programs.id_exercise JOIN programs ON exercises_programs.id_program=programs.id_program WHERE programs.id_program=%s", (program_id,))
-                 exercise = mycursor.fetchone()
+                 mycursor.execute("SELECT exercises.name, exercises.description FROM exercises JOIN exercises_programs ON exercises.id_exercise=exercises_programs.id_exercise JOIN programs ON exercises_programs.id_program=programs.id_program WHERE programs.id_program=%s LIMIT 5", (program_id,))
+                 exercises = mycursor.fetchall()
                  mycursor.close()
-                 if exercise:
-                    return jsonify(exercise)
-                # return render_template('user.html', user=user, program=program)
+                 if exercises:
+                    return render_template('user.html', user=user, program=program, progress = progress, exercises = exercises)
             else:
                 return render_template('error.html', message="Aucun programme assigné à cet utilisateur.")
         else:
@@ -143,7 +143,7 @@ def questions():
     mycursor.close()
 
     return redirect(url_for('programs', iduser=user_id))
-
+     
 
 #Liste des programmes disponibles
 @app.route('/users/<int:iduser>/programs')
@@ -177,6 +177,26 @@ def select_exercise(program_id):
     mycursor.close()
     return render_template('select_exercise.html', exercises=exercises, program_id=program_id)
 
+
+
+def calculate_progress(user_id):
+    mycursor = mydb.cursor(dictionary=True)
+    
+    # Nombre total d'exercices dans le programme de l'utilisateur
+    mycursor.execute("SELECT COUNT(*) as total_exercises FROM exercises e JOIN exercises_programs ep ON e.id_exercise = ep.id_exercise JOIN programs p ON ep.id_program = p.id_program JOIN users_programs up ON p.id_program = up.id_program WHERE up.iduser = %s", (user_id,))
+    total_exercises = mycursor.fetchone()['total_exercises']
+    
+    # Nombre d'exercices complétés
+    mycursor.execute("SELECT COUNT(*) as completed_exercises FROM exercises e JOIN exercises_programs ep ON e.id_exercise = ep.id_exercise JOIN programs p ON ep.id_program = p.id_program JOIN users_programs up ON p.id_program = up.id_program WHERE up.iduser = %s AND e.completed = TRUE", (user_id,))
+    completed_exercises = mycursor.fetchone()['completed_exercises']
+    
+    mycursor.close()
+    
+    if total_exercises == 0:
+        return 0
+    
+    progress_percentage = (completed_exercises / total_exercises) * 100
+    return progress_percentage
 
 
 if __name__ == "__main__":

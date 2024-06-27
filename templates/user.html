@@ -13,63 +13,47 @@
   <body>
     <img src="../static/img/Logo_Bleu.svg" alt="" />
     <div class="container">
-      <div class="header">
-        <h1>Welcome {{user.firstname}}</h1>
-      </div>
-      <div class="main-content">
-        <div class="panel left-panel">
-          <div>
-            <h2>My Program</h2>
-            <p>Name programme</p>
-            <div class="exercise-list">
-              <a class="exercise-item">
-                <p><strong>Nom Exercice:</strong> description</p>
-              </a>
-              <a class="exercise-in-progress">
-                <p><strong>Nom Exercice:</strong> description</p>
-              </a>
-              <a class="exercise-item">
-                <p><strong>Nom Exercice:</strong> description</p>
-              </a>
-              <a class="exercise-item">
-                <p><strong>Nom Exercice:</strong> description</p>
-              </a>
-              <a class="exercise-item">
-                <p><strong>Nom Exercice:</strong> description</p>
-              </a>
-            </div>
-          </div>
+        <div class="header">
+            <h1>Welcome {{user.firstname}}</h1>
         </div>
-        <div class="panel right-panel">
-          <div class="progress-section">
-            <div class="progress-circle" data-percentage="55">
-              <svg class="progress-ring" width="120" height="120">
-                <circle
-                  class="progress-ring__circle"
-                  stroke="green"
-                  stroke-width="8"
-                  fill="transparent"
-                  r="54"
-                  cx="60"
-                  cy="60"
-                />
-              </svg>
-              <div class="progress-text">74%</div>
+        <div class="main-content">
+            <div class="panel left-panel">
+                <div>
+                    <h2>Mon Programme</h2>
+                    <p>{{program.name}}</p>
+                    <div class="exercise-list">
+                        {% for exercise in exercises %}
+                        <a class="exercise-item">
+                            <p><strong>{{exercise.name}}</strong> {{exercise.description}}</p>
+                        </a>
+                        {% endfor %}
+                    </div>
+                </div>
             </div>
-            <div>
-              <h2>Bilan général</h2>
-              <p>Résultats/Progression</p>
+            <div class="panel right-panel">
+                <div class="progress-section">
+                     <div class="progress-circle" data-percentage="{{progress}}"> <!-- données en pourcentage du cercle -->
+                        <svg class="progress-ring" width="120" height="120">
+                            <circle class="progress-ring__circle" stroke="green" stroke-width="8" fill="transparent" r="54" cx="60" cy="60"/>
+                        </svg>
+                        <div class="progress-text">{{progress}}</div> <!-- données en pourcentage du texte -->
+                    </div>
+                    <div>
+                        <h2>Bilan général</h2>
+                        <p>Résultats/Progression</p>
+                    </div>
+                    
+                </div>
+                
             </div>
-          </div>
+            
         </div>
-      </div>
-      <div class="buttons">
-        <button onclick="location.href='exercices.html'" class="button">
-          Next Exercice
-        </button>
-        <button class="button secondary">Update progression</button>
-      </div>
+        <div class="buttons">
+            <button onclick="location.href='exercices.html'" class="button">Next Exercice</button>
+            <button class="button secondary">Update progression</button>
+        </div>
+        
     </div>
     <script src="../static/js/progress.js"></script>
-  </body>
+</body>
 </html>
