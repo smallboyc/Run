@@ -11,6 +11,7 @@
   />
 </head>
 <body>
+    <img src="../static/img/Logo_Bleu.svg" alt="" />
     <div class="container">
         <h2>Jour N°</h2>
         <div class="header">
@@ -22,23 +23,24 @@
         </div>
         <div class="inputs">
             <div class="input-group">
-                <label for="temps"> Critère n°1 </label>
-                <input type="text" id="temps" name="temps">
+                <label for="temps"> Temps </label>
+                <input type="number" id="temps" name="temps">
                 <button>Valider</button>
             </div>
             <div class="input-group">
-                <label for="distance"> Critère n°2 </label>
-                <input type="text" id="distance" name="distance">
+                <label for="distance"> Distance </label>
+                <input type="number" id="distance" name="distance">
                 <button>Valider</button>
             </div>
             <div class="input-group">
                 <label for="obstacle"> Critère n°3 </label>
-                <input type="text" id="obstacle" name="obstacle">
+                <input type="number" id="obstacle" name="obstacle">
                 <button>Valider</button>
             </div>
         </div>
-        <div class="done-button">
-            <button>FAIT</button>
+        <div class="buttons">
+            <button class="button">Done</button>
+            <button onclick="location.href='user.html'" class="button secondary">Return</button>
         </div>
     </div>
 </body>
