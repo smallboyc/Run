@@ -60,21 +60,44 @@ body {
 .left-panel ul li:active {
     background-color: #b9bbbc;
 }
-button {
-    background-color: #007bff;
+.button {
+    background-color: #011837;
     color: white;
     padding: 10px 20px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s ease;
+    width: 200px;
+    margin-top: 20px;
 }
-button:hover {
-    background-color: #0056b3;
+.button:hover {
+    background-color: #01356d;
 }
-button:active {
-    background-color: #004080;
+.button:active {
+    background-color: #011837;
 }
+
+.button.secondary {
+    background-color: #e2e2e2;
+    color: #011837;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    width: 200px;
+    margin-top: 20px;
+}
+
+.button.secondary:hover {
+    background-color: #f0f0f0;
+}
+
+.button.secondary:active {
+    background-color: #e2e2e2;
+}
+
 .right-panel {
     display: flex;
     flex-direction: column;
@@ -114,10 +137,7 @@ button:active {
     width: 100%;
     text-align: center;
 }
-.next-exercise-button {
-    width: 200px;
-    margin-top: 20px;
-}
+
 .update-progress-button {
     
     width: 200px;
@@ -145,6 +165,19 @@ button:active {
 }
 
 .exercise-item {
+    display: block;
+    background-color: rgb(219, 217, 217);
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 5px;
+    margin-bottom: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-decoration: none;  /* Remove underline from links */
+    color: black;           /* Set text color */
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.exercise-in-progress {
     display: block;
     background-color: white;
     border: 1px solid #ddd;
