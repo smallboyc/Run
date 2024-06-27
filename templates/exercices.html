@@ -17,23 +17,26 @@
             </div>
             <p> Descritpion exercice </p>
         </div>
-        <div class="inputs">
+        <form action="" method="POST" class="inputs">
             <div class="input-group">
                 <label for="temps"> Temps </label>
-                <input type="number" id="temps" name="temps">
-                <button>Valider</button>
+                <input type="number" id="temps" name="temps" class="input">
+                <input type="submit" value="Valider" class="button_valider">
+                
             </div>
             <div class="input-group">
                 <label for="distance"> Distance </label>
-                <input type="number" id="distance" name="distance">
-                <button>Valider</button>
+                <input type="number" id="distance" name="distance" class="input">
+                <input type="submit" value="Valider" class="button_valider">
+                
             </div>
             <div class="input-group">
                 <label for="obstacle"> Critère n°3 </label>
-                <input type="number" id="obstacle" name="obstacle">
-                <button>Valider</button>
+                <input type="number" id="obstacle" name="obstacle" class="input">
+                <input type="submit" value="Valider" class="button_valider">
+                
             </div>
-        </div>
+        </form>
         <div class="buttons">
             <button class="button">Done</button>
             <button onclick="location.href='user.html'" class="button secondary">Return</button>

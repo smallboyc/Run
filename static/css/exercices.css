@@ -60,15 +60,16 @@ h2 {
     font-size: 1em;
 }
 
-.input-group input {
+.input {
     flex: 2;
     padding: 8px;
+    width: 90% !important;
     margin-right: 10px;
     border: 1px solid #ddd;
     border-radius: 5px;
 }
 
-.input-group button {
+.button_valider {
     padding: 10px 20px;
     border: none;
     background-color: #011837;
@@ -78,7 +79,7 @@ h2 {
     transition: background-color 0.3s;
 }
 
-.input-group button:hover {
+.button_valider:hover {
     background-color: #01356d;
 }
 
