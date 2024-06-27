@@ -7,26 +7,18 @@
     <link rel="stylesheet" href="../static/css/login.css" />
   </head>
   <body>
+    <img src="../static/img/Logo_Bleu.svg" alt="" />
     <div class="container">
       <h2 class="title">Connectez-vous</h2>
-
       <form action="/login_user" method="post">
         <div class="inputs">
           <div class="input-group">
-            <label class="champs" for="firstname">Prénom :</label>
-            <input type="text" name="firstname" id="firstname" required />
-          </div>
-          <div class="input-group">
-            <label class="champs" for="surname">Nom :</label>
-            <input type="text" name="surname" id="surname" required />
+            <label class="champs" for="email">E-mail :</label>
+            <input type="email" name="email" id="email" required />
           </div>
           <div class="input-group">
             <label class="champs" for="password">Password :</label>
             <input type="password" name="password" id="password" required />
-          </div>
-          <div class="input-group">
-            <label class="champs" for="email">E-mail :</label>
-            <input type="email" name="email" id="email" required />
           </div>
           <div class="buttons">
             <input class="button" type="submit" value="Login" />
