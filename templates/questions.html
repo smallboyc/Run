@@ -33,5 +33,10 @@
         </div>
       </form>
     </section>
+    {% if message %}
+    <div class="welcome_message">
+      <p>{{message}}</p>
+    </div>
+    {% endif %}
   </body>
 </html>

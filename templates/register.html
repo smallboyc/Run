@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Exercice</title>
     <link
-    rel="stylesheet"
-    type="text/css"
-    href="{{ url_for('static', filename='css/register.css') }}"
-  />
+      rel="stylesheet"
+      type="text/css"
+      href="{{ url_for('static', filename='css/register.css') }}"
+    />
   </head>
   <body>
     <img src="../static/img/Logo_Bleu.svg" alt="" />
@@ -34,10 +34,17 @@
           </div>
           <div class="buttons">
             <input class="button" type="submit" value="Register" />
-            <button onclick="location.href='/'" class="button secondary">Return</button>
+            <button onclick="location.href='/'" class="button secondary">
+              Return
+            </button>
           </div>
         </div>
       </form>
     </div>
+    {% if message %}
+    <div class="no_register_error">
+      <p>{{message}}</p>
+    </div>
+    {% endif %}
   </body>
 </html>

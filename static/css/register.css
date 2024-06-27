@@ -13,6 +13,11 @@ img {
     width: 200px;
 }
 
+.no_register_error
+{
+    color: red;
+}
+
 .container {
     margin-top: 20px;
     margin-bottom: 20px;

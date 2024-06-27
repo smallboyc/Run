@@ -22,17 +22,17 @@ def root():
     return render_template('index.html')
 
 
-# Enregistrement
+#Affichage de la page Register
 @app.route('/register')
 def register():
-    return render_template('register.html')
+    return render_template('register.html', message = request.args.get('message'))
 
-
+#Affichage de la page Log in
 @app.route('/login')
 def login():
     return render_template('login.html')
 
-
+#On détermine si le user se log correctement.
 @app.route('/login_user', methods =['POST'])
 def login_user():
     mycursor = mydb.cursor(dictionary=True)
@@ -47,10 +47,10 @@ def login_user():
         session['user_email'] = user['email']
         return redirect(url_for('get_user', iduser=user['iduser']))
     else:
-        return redirect(url_for('register'))
+        return redirect(url_for('register', message="Connexion impossible. Enregistrez-vous !"))
 
         
-
+#On détermine si le user s'est enregistré correctement, si oui -> questionnaire
 @app.route('/register_user', methods=['GET', 'POST'])
 def register_user():
     firstname = request.form["firstname"]
@@ -79,53 +79,10 @@ def register_user():
     session['user_id'] = user_id
     mycursor.close()
     print("Utilisateur inséré avec succès")
-    return redirect(url_for('complete_user'))
+    return redirect(url_for('complete_user', message="Bienvenue! Allez, encore un effort :)"))
 
 
-@app.route('/users/questions')
-def complete_user():
-    return render_template('questions.html')
-     
-
-# @app.route('/users/<iduser>')
-# def get_user(iduser):
-#      mycursor = mydb.cursor(dictionary=True)
-#      mycursor.execute('SELECT firstname, surname, email FROM users WHERE iduser=%s',(iduser,))
-#      user = mycursor.fetchone()
-#      mycursor.close()
-#      if user: #affiche la page de l'utilisateur
-#         return render_template('user.html', user=user)
-#      else:
-#         return render_template('error.html', message="Erreur")
-     
-
-@app.route('/users/<iduser>')
-def get_user(iduser):
-        mycursor = mydb.cursor(dictionary=True)
-        mycursor.execute('SELECT firstname, surname, email FROM users WHERE iduser=%s', (iduser,))
-        user = mycursor.fetchone()
-        
-        if user:
-            # Récupérer le programme assigné à l'utilisateur depuis la table de jointure
-            mycursor.execute("SELECT p.name, p.id_program FROM programs p JOIN users_programs up ON p.id_program=up.id_program JOIN users u ON up.iduser=u.iduser WHERE u.iduser=%s",(iduser,))
-            program = mycursor.fetchone()
-            
-            if program:
-                 progress = calculate_progress(iduser)
-                 program_id = program['id_program']
-                 mycursor.execute("SELECT exercises.name, exercises.description FROM exercises JOIN exercises_programs ON exercises.id_exercise=exercises_programs.id_exercise JOIN programs ON exercises_programs.id_program=programs.id_program WHERE programs.id_program=%s LIMIT 5", (program_id,))
-                 exercises = mycursor.fetchall()
-                 mycursor.close()
-                 if exercises:
-                    return render_template('user.html', user=user, program=program, progress = progress, exercises = exercises)
-            else:
-                return render_template('error.html', message="Aucun programme assigné à cet utilisateur.")
-        else:
-            return render_template('error.html', message="Utilisateur non trouvé.")
-    
-
-
-
+#Quand le user a répondu au questionnaire
 @app.route('/users/questionnaire', methods=['POST'])
 def questions():
     weight = request.form["weight"]
@@ -165,18 +122,76 @@ def assign_program(iduser, id_program):
         mycursor.close()
         return redirect(url_for('get_user', iduser=iduser))
 
+@app.route('/users/questions')
+def complete_user():
+    return render_template('questions.html', message = request.args.get('message'))
+     
+
+#Affiche l'utilisateur et ses propriétés (programme et exercices)
+@app.route('/users/<iduser>')
+def get_user(iduser):
+        mycursor = mydb.cursor(dictionary=True)
+        mycursor.execute('SELECT iduser, firstname, surname, email FROM users WHERE iduser=%s', (iduser,))
+        user = mycursor.fetchone()
+        
+        if user:
+            # Récupérer le programme assigné à l'utilisateur depuis la table de jointure
+            mycursor.execute("SELECT p.name, p.id_program FROM programs p JOIN users_programs up ON p.id_program=up.id_program JOIN users u ON up.iduser=u.iduser WHERE u.iduser=%s",(iduser,))
+            program = mycursor.fetchone()
+            
+            if program:
+                 progress = calculate_progress(iduser)
+                 program_id = program['id_program']
+                 mycursor.execute("SELECT exercises.name, exercises.description FROM exercises JOIN exercises_programs ON exercises.id_exercise=exercises_programs.id_exercise JOIN programs ON exercises_programs.id_program=programs.id_program WHERE programs.id_program=%s LIMIT 5", (program_id,))
+                 exercises = mycursor.fetchall()
+                 mycursor.close()
+                 if exercises:
+                    return render_template('user.html', user=user, program=program, progress = progress, exercises = exercises)
+            else:
+                return render_template('error.html', message="Aucun programme assigné à cet utilisateur.")
+        else:
+            return render_template('error.html', message="Utilisateur non trouvé.")
+    
 
 
+#Page pour modifier les données du user
+@app.route('/users/<iduser>/edit', methods=['GET', 'POST'])
+def edit_user(iduser):
+    mycursor = mydb.cursor(dictionary=True)
+    
+    if request.method == 'GET':
+        # Récupérer les informations de l'utilisateur
+        mycursor.execute('SELECT iduser, firstname, surname, email FROM users WHERE iduser=%s', (iduser,))
+        user = mycursor.fetchone()
+        # Récupérer l'id du programme du user 
+        mycursor.execute('SELECT * FROM programs JOIN users_programs ON programs.id_program=users_programs.id_program WHERE iduser=%s', (iduser,))
+        user_program = mycursor.fetchone()
+        # Récupère tous les programmes
+        mycursor.execute('SELECT * FROM programs')
+        programs = mycursor.fetchall()
+        mycursor.close()
 
-#Sélectionner les exercices d'un programme
-@app.route('/select_exercise/<int:program_id>')
-def select_exercise(program_id):
-    mycursor = mydb.cursor()
-    mycursor.execute("SELECT idexercises, name FROM exercises")
-    exercises = mycursor.fetchall()
-    mycursor.close()
-    return render_template('select_exercise.html', exercises=exercises, program_id=program_id)
+        # Affiche les données actuelles du user
+        return render_template('edit_user.html', user=user, programs=programs, user_program=user_program, iduser=iduser)
 
+    elif request.method == 'POST':
+        # Récupérer les données du formulaire
+        firstname = request.form['firstname']
+        surname = request.form['surname']
+        email = request.form['email']
+        id_program = request.form['id_program']
+
+        # Mettre à jour les informations du user
+        mycursor.execute("UPDATE users SET firstname=%s, surname=%s, email=%s WHERE iduser=%s", (firstname, surname, email, iduser))
+        # Mettre à jour le programme du user
+        mycursor.execute("UPDATE users_programs SET id_program=%s WHERE iduser=%s", (id_program, iduser))
+        
+        mydb.commit()
+        mycursor.close()
+        
+        return redirect(url_for('get_user', iduser=iduser))
+
+    
 
 
 def calculate_progress(user_id):
