@@ -16,6 +16,12 @@ mydb = mysql.connector.connect(
     database=config.Config.DB_NAME
 )
 
+def is_logged_in():
+    return 'user_id' in session
+
+def is_authorized(iduser):
+    return is_logged_in() and session['user_id'] == iduser
+
 # Accueil
 @app.route('/')
 def root():
@@ -79,32 +85,42 @@ def register_user():
     session['user_id'] = user_id
     mycursor.close()
     print("Utilisateur inséré avec succès")
-    return redirect(url_for('complete_user', message="Bienvenue! Allez, encore un effort :)"))
+    return redirect(url_for('complete_user', message="Bienvenue! Allez, encore un effort :)", iduser = user_id))
 
+@app.route('/users/<int:iduser>/questions')
+def complete_user(iduser):
+    if not is_authorized(iduser):
+            return redirect(url_for('complete_user', iduser = session['user_id']))
+    return render_template('questions.html', message = request.args.get('message'), iduser = iduser)
 
 #Quand le user a répondu au questionnaire
-@app.route('/users/questionnaire', methods=['POST'])
-def questions():
+@app.route('/users/<int:iduser>/questionnaire', methods=['POST'])
+def questions(iduser):
+    if not is_authorized(iduser):
+            return redirect(url_for('questions', iduser = session['user_id']))
+    
     weight = request.form["weight"]
     height = request.form["height"]
     animal = request.form["animal"]
 
-    user_id = session.get('user_id')
     
     mycursor = mydb.cursor()
     sql = "UPDATE users SET weight=%s, height=%s, animal=%s WHERE iduser=%s"
-    val = (weight, height, animal, user_id) 
+    val = (weight, height, animal, iduser) 
 
     mycursor.execute(sql, val)
     mydb.commit()
     mycursor.close()
 
-    return redirect(url_for('programs', iduser=user_id))
+    return redirect(url_for('programs', iduser=iduser))
      
 
 #Liste des programmes disponibles
 @app.route('/users/<int:iduser>/programs')
 def programs(iduser):
+    if not is_authorized(iduser):
+            return redirect(url_for('programs', iduser = session['user_id']))
+    
     mycursor = mydb.cursor(dictionary=True)
     mycursor.execute("SELECT id_program, name, description FROM programs")
     programs = mycursor.fetchall()
@@ -115,6 +131,9 @@ def programs(iduser):
 #Connecte le user avec le programme (table de jonction)
 @app.route('/users/<int:iduser>/assign/<int:id_program>')
 def assign_program(iduser, id_program):
+        if not is_authorized(iduser):
+            return redirect(url_for('programs', iduser = session['user_id']))
+         
         mycursor = mydb.cursor()
         # Insérez les données dans votre table de jointure
         mycursor.execute("INSERT INTO users_programs (iduser, id_program) VALUES (%s, %s)", (iduser, id_program))
@@ -122,14 +141,15 @@ def assign_program(iduser, id_program):
         mycursor.close()
         return redirect(url_for('get_user', iduser=iduser))
 
-@app.route('/users/questions')
-def complete_user():
-    return render_template('questions.html', message = request.args.get('message'))
+
      
 
 #Affiche l'utilisateur et ses propriétés (programme et exercices)
-@app.route('/users/<iduser>')
+@app.route('/users/<int:iduser>')
 def get_user(iduser):
+        if not is_authorized(iduser):
+            return redirect(url_for('get_user', iduser = session['user_id']))
+        
         mycursor = mydb.cursor(dictionary=True)
         mycursor.execute('SELECT iduser, firstname, surname, email FROM users WHERE iduser=%s', (iduser,))
         user = mycursor.fetchone()
@@ -155,8 +175,11 @@ def get_user(iduser):
 
 
 #Page pour modifier les données du user
-@app.route('/users/<iduser>/edit', methods=['GET', 'POST'])
+@app.route('/users/<int:iduser>/edit', methods=['GET', 'POST'])
 def edit_user(iduser):
+    if not is_authorized(iduser):
+        return redirect(url_for('edit_user', iduser = session['user_id']))
+    
     mycursor = mydb.cursor(dictionary=True)
     
     if request.method == 'GET':
@@ -188,13 +211,15 @@ def edit_user(iduser):
         
         mydb.commit()
         mycursor.close()
-        
         return redirect(url_for('get_user', iduser=iduser))
 
     
 
 
 def calculate_progress(user_id):
+    if not is_authorized(user_id):
+        return redirect(url_for('login'))
+    
     mycursor = mydb.cursor(dictionary=True)
     
     # Nombre total d'exercices dans le programme de l'utilisateur
