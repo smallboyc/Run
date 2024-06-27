@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Dashboard</title>  
-    <link rel="stylesheet" href="../static/css/user.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/user.css') }}">
 </head>
 <body>
     <div class="container">
@@ -37,11 +37,11 @@
             </div>
             <div class="panel right-panel">
                 <div class="progress-section">
-                     <div class="progress-circle" data-percentage="{{progress}}%"> <!-- données en pourcentage du cercle -->
+                     <div class="progress-circle" data-percentage="{{progress}}"> <!-- données en pourcentage du cercle -->
                         <svg class="progress-ring" width="120" height="120">
                             <circle class="progress-ring__circle" stroke="green" stroke-width="8" fill="transparent" r="54" cx="60" cy="60"/>
                         </svg>
-                        <div class="progress-text">{{progress}}%</div> <!-- données en pourcentage du texte -->
+                        <div class="progress-text">{{progress}}</div> <!-- données en pourcentage du texte -->
                     </div>
                     <div>
                         <h2>Bilan général</h2>

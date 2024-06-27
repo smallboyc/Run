@@ -85,18 +85,6 @@ def register_user():
 @app.route('/users/questions')
 def complete_user():
     return render_template('questions.html')
-
-
-@app.route('/users/<iduser>')
-def get_user(iduser):
-     mycursor = mydb.cursor(dictionary=True)
-     mycursor.execute('SELECT firstname, surname, email FROM users WHERE iduser=%s',(iduser,))
-     user = mycursor.fetchone()
-     mycursor.close()
-     if user: #affiche la page de l'utilisateur
-        return render_template('user.html', user=user)
-     else:
-        return render_template('error.html', message="Erreur")
      
 
 
@@ -130,14 +118,14 @@ def get_user(iduser):
         progress = calculate_progress(iduser)
         return render_template('user.html', user=user, progress=progress)
      else:
-        return jsonify({"error": "Utilisateur non trouvé"}), 404
+        return jsonify('error.html', message="Erreur")
      
 
 #Programmes
 @app.route('/select_program')
 def select_program():
     mycursor = mydb.cursor()
-    mycursor.execute("SELECT idprogram, name_program FROM program")
+    mycursor.execute("SELECT id_program, name_program FROM program")
     programs = mycursor.fetchall()
     mycursor.close()
     return render_template('programmes.html', programs=programs)
@@ -165,12 +153,12 @@ def calculate_progress(user_id):
     mycursor = mydb.cursor(dictionary=True)
     
     # Nombre total d'exercices dans le programme de l'utilisateur
-    mycursor.execute("SELECT COUNT(*) as total_exercises FROM exercises e JOIN exercises_programs ep ON e.id_exercise = ep.id_exercise JOIN program p ON ep.id_program = p.id_program JOIN users_programs up ON p.id_program = up.id_program WHERE uep.iduser = %s", (user_id,))
-    total_exercises = mycursor.fetchone()
+    mycursor.execute("SELECT COUNT(*) as total_exercises FROM exercises e JOIN exercises_programs ep ON e.id_exercise = ep.id_exercise JOIN program p ON ep.id_program = p.id_program JOIN users_programs up ON p.id_program = up.id_program WHERE up.iduser = %s", (user_id,))
+    total_exercises = mycursor.fetchone()['total_exercises']
     
     # Nombre d'exercices complétés
-    mycursor.execute("SELECT COUNT(*) as completed_exercises FROM exercises e JOIN exercises_programs ep ON e.id_exercise = ep.id_exercise JOIN program p ON ep.id_program = p.id_program JOIN users_programs up ON p.id_program = up.id_program WHERE uep.iduser = %s AND completed = TRUE", (user_id,))
-    completed_exercises = mycursor.fetchone()
+    mycursor.execute("SELECT COUNT(*) as completed_exercises FROM exercises e JOIN exercises_programs ep ON e.id_exercise = ep.id_exercise JOIN program p ON ep.id_program = p.id_program JOIN users_programs up ON p.id_program = up.id_program WHERE up.iduser = %s AND e.completed = TRUE", (user_id,))
+    completed_exercises = mycursor.fetchone()['completed_exercises']
     
     mycursor.close()
     
