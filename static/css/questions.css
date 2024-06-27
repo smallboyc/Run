@@ -1,3 +1,7 @@
+img {
+    width: 200px;
+}
+
 body {
     font-family: Arial, sans-serif;
     display: flex;
@@ -108,8 +112,8 @@ h2 {
     margin-top: 25px;
 }
 
-button {
-    background-color: #007bff;
+.button {
+    background-color: #011837;
     color: white;
     padding: 10px 20px;
     border: none;
@@ -117,10 +121,24 @@ button {
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
-button:hover {
+
+
+.title {
+    text-align: center;
+}
+
+.buttons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 25px;
+}
+
+
+.button:hover {
     background-color: #0056b3;
 }
-button:active {
+.button:active {
     background-color: #004080;
 }
 
