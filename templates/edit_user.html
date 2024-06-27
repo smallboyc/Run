@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exercice</title>
+    <link rel="stylesheet" href="../static/css/edit_user.css">
+</head>
+<body>
+    <img src="../static/img/Logo_Bleu.svg" alt="" />
+    <div class="container">
+        <h2>Éditer profil</h2>
+        <div class="header">
+            <div class="exercise-title">
+                <h3> Vos données personnelles </h3>
+            </div>
+        </div>
+        <div class="inputs">
+            <div class="input-group">
+                <label for="firstname"> Prénom </label>
+                <input type="text" id="firstname" name="firstname">
+                
+            </div>
+            <div class="input-group">
+                <label for="surname"> Nom </label>
+                <input type="text" id="surname" name="surname">
+                
+            </div>
+            <div class="input-group">
+                <label for="email"> Email </label>
+                <input type="email" name="email" id="email" required />
+                
+            </div>
+            <div class="input-group">
+                <label for="password"> Mot de passe </label>
+                <input type="password" name="password" id="password" required />
+                
+            </div>
+            <div class="input-group">
+                <p> Changer de programme </p>
+                <select id="programme" name="programme">
+                    <option value="vitesse"> Vitesse </option>
+                    <option value="puissance"> Puissance </option>
+                    <option value="endurance"> Endurance </option>
+                </select>
+            </div>
+        </div>
+        <div class="buttons">
+            <button onclick="location.href='user.html'"class="button">Done</button>
+            <button onclick="location.href='user.html'" class="button secondary">Return</button>
+        </div>
+    </div>
+</body>
+</html>
