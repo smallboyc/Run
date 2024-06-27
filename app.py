@@ -87,17 +87,43 @@ def complete_user():
     return render_template('questions.html')
 
 
+# @app.route('/users/<iduser>')
+# def get_user(iduser):
+#      mycursor = mydb.cursor(dictionary=True)
+#      mycursor.execute('SELECT firstname, surname, email FROM users WHERE iduser=%s',(iduser,))
+#      user = mycursor.fetchone()
+#      mycursor.close()
+#      if user: #affiche la page de l'utilisateur
+#         return render_template('user.html', user=user)
+#      else:
+#         return render_template('error.html', message="Erreur")
+     
+
 @app.route('/users/<iduser>')
 def get_user(iduser):
-     mycursor = mydb.cursor(dictionary=True)
-     mycursor.execute('SELECT firstname, surname, email FROM users WHERE iduser=%s',(iduser,))
-     user = mycursor.fetchone()
-     mycursor.close()
-     if user: #affiche la page de l'utilisateur
-        return render_template('user.html', user=user)
-     else:
-        return render_template('error.html', message="Erreur")
-     
+        mycursor = mydb.cursor(dictionary=True)
+        mycursor.execute('SELECT firstname, surname, email FROM users WHERE iduser=%s', (iduser,))
+        user = mycursor.fetchone()
+        
+        if user:
+            # Récupérer le programme assigné à l'utilisateur depuis la table de jointure
+            mycursor.execute("SELECT programs.name, programs.id_program FROM programs JOIN users_programs ON programs.id_program=users_programs.id_program JOIN users ON users_programs.iduser=users.iduser WHERE users.iduser=%s",(iduser,))
+            program = mycursor.fetchone()
+            
+            if program:
+                 program_id = program['id_program']
+                 mycursor.execute("SELECT exercises.name, exercises.description FROM exercises JOIN exercises_programs ON exercises.id_exercise=exercises_programs.id_exercise JOIN programs ON exercises_programs.id_program=programs.id_program WHERE programs.id_program=%s", (program_id,))
+                 exercise = mycursor.fetchone()
+                 mycursor.close()
+                 if exercise:
+                    return jsonify(exercise)
+                # return render_template('user.html', user=user, program=program)
+            else:
+                return render_template('error.html', message="Aucun programme assigné à cet utilisateur.")
+        else:
+            return render_template('error.html', message="Utilisateur non trouvé.")
+    
+
 
 
 @app.route('/users/questionnaire', methods=['POST'])
@@ -126,8 +152,19 @@ def programs(iduser):
     mycursor.execute("SELECT id_program, name, description FROM programs")
     programs = mycursor.fetchall()
     mycursor.close()
-    # return jsonify(programs)
     return render_template('programmes.html', programs=programs, iduser=iduser)
+
+
+#Connecte le user avec le programme (table de jonction)
+@app.route('/users/<int:iduser>/assign/<int:id_program>')
+def assign_program(iduser, id_program):
+        mycursor = mydb.cursor()
+        # Insérez les données dans votre table de jointure
+        mycursor.execute("INSERT INTO users_programs (iduser, id_program) VALUES (%s, %s)", (iduser, id_program))
+        mydb.commit()
+        mycursor.close()
+        return redirect(url_for('get_user', iduser=iduser))
+
 
 
 
