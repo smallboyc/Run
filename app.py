@@ -47,12 +47,12 @@ def login_user():
         session['user_email'] = user['email']
         return redirect(url_for('get_user', iduser=user['iduser']))
     else:
-        return render_template('error.html', message="Email ou mot de passe incorrect")
+        return redirect(url_for('register'))
 
         
 
-@app.route('/add_user', methods=['GET', 'POST'])
-def add_user():
+@app.route('/register_user', methods=['GET', 'POST'])
+def register_user():
     firstname = request.form["firstname"]
     surname = request.form["surname"]
     password = request.form["password"]
@@ -85,6 +85,19 @@ def add_user():
 @app.route('/users/questions')
 def complete_user():
     return render_template('questions.html')
+
+
+@app.route('/users/<iduser>')
+def get_user(iduser):
+     mycursor = mydb.cursor(dictionary=True)
+     mycursor.execute('SELECT firstname, surname, email FROM users WHERE iduser=%s',(iduser,))
+     user = mycursor.fetchone()
+     mycursor.close()
+     if user: #affiche la page de l'utilisateur
+        return render_template('user.html', user=user)
+     else:
+        return render_template('error.html', message="Erreur")
+     
 
 
 @app.route('/users/questionnaire', methods=['POST'])
