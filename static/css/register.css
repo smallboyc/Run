@@ -86,9 +86,10 @@ h2 {
 
 .buttons {
     display: flex;
-    flex-direction: column;
-    align-items: center;
+    justify-content: center;
+    gap: 60px;
     margin-top: 25px;
+    align-items: center;
 }
 
 
@@ -102,4 +103,22 @@ h2 {
 .champs {
     font-size: 13px;
     margin-bottom: 2px;
+}
+
+.button.secondary {
+    background-color: #e2e2e2;
+    color: #011837;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.button.secondary:hover {
+    background-color: #f0f0f0;
+}
+
+.button.secondary:active {
+    background-color: #e2e2e2;
 }
