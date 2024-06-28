@@ -153,43 +153,33 @@ def assign_program(iduser, id_program):
         return redirect(url_for('get_user', iduser=iduser))
 
 
-     
-
 #Affiche l'utilisateur et ses propriétés (programme et exercices)
 @app.route('/users/<int:iduser>')
 def get_user(iduser):
-        if not is_authorized(iduser):
-            return redirect(url_for('get_user', iduser = session['user_id']))
-        
-        mycursor = mydb.cursor(dictionary=True)
-        mycursor.execute('SELECT iduser, firstname, surname, email FROM users WHERE iduser=%s', (iduser,))
-        user = mycursor.fetchone()
-        
-        if user:
-            # Récupérer le programme assigné à l'utilisateur depuis la table de jointure
-            mycursor.execute("SELECT p.name, p.id_program FROM programs p JOIN users_programs up ON p.id_program=up.id_program JOIN users u ON up.iduser=u.iduser WHERE u.iduser=%s AND p.completed = FALSE",(iduser,))
-            program = mycursor.fetchone()
-            
-            if program:
-                 progress = calculate_progress(iduser)
-                 program_id = program['id_program']
+    if not is_authorized(iduser):
+        return redirect(url_for('get_user', iduser = session['user_id']))
 
-                #Sélectionne tous les exercices
-                 mycursor.execute("SELECT e.id_exercise, e.name, e.description FROM exercises e JOIN exercises_programs ep ON e.id_exercise = ep.id_exercise WHERE ep.id_program = %s ORDER BY e.id_exercise", (program_id,))
-                 exercises = mycursor.fetchall()
+    mycursor = mydb.cursor(dictionary=True)
+    mycursor.execute('SELECT iduser, firstname, surname, email FROM users WHERE iduser=%s', (iduser,))
+    user = mycursor.fetchone()
 
-                #Sélectionne les exercices qui ne sont pas complétés
-                 mycursor.execute("SELECT e.id_exercise, e.name, e.description, e.completed FROM exercises e JOIN exercises_programs ep ON e.id_exercise = ep.id_exercise WHERE ep.id_program = %s AND e.completed = FALSE ORDER BY e.id_exercise", (program_id,))
-                 next_exercise = mycursor.fetchone()
+    if user:
+        # Récupérer le programme assigné à l'utilisateur depuis la table de jointure
+        mycursor.execute("SELECT p.name, p.id_program FROM programs p JOIN users_programs up ON p.id_program=up.id_program JOIN users u ON up.iduser=u.iduser WHERE u.iduser=%s",(iduser,))
+        program = mycursor.fetchone()
 
-                 mycursor.close()
-
-                 return render_template('user.html', user=user, program=program, progress = progress, exercises=exercises, next_exercise=next_exercise)
+        if program:
+            progress = calculate_progress(iduser)
+            program_id = program['id_program']
+            mycursor.execute("SELECT exercises.name, exercises.description FROM exercises JOIN exercises_programs ON exercises.id_exercise=exercises_programs.id_exercise JOIN programs ON exercises_programs.id_program=programs.id_program WHERE programs.id_program=%s LIMIT 5", (program_id,))
+            exercises = mycursor.fetchall()
+            mycursor.close()
+            if exercises:
+                changed_weight = calculate_weight(iduser)
+                return render_template('user.html', user=user, program=program, progress = progress, changed_weight = changed_weight, exercises = exercises)
             else:
-                mycursor.close()
                 return render_template('error.html', message="Aucun programme assigné à cet utilisateur.")
         else:
-            mycursor.close()
             return render_template('error.html', message="Utilisateur non trouvé.")
     
 
@@ -293,26 +283,6 @@ def complete_exercise(iduser):
     return redirect(url_for('get_user', iduser=iduser))
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 #Affichage l'exercice en cours
 
 def calculate_progress(user_id):
@@ -336,6 +306,30 @@ def calculate_progress(user_id):
     
     progress_percentage = (completed_exercises / total_exercises) * 100
     return progress_percentage
+
+
+def calculate_weight(user_id):
+
+    mycursor = mydb.cursor(dictionary=True)
+
+    mycursor.execute("SELECT weight FROM users WHERE iduser=%s", (user_id,))
+    weight = mycursor.fetchone()['weight']
+
+    mycursor.execute("SELECT e.time, e.distance, e.target_result FROM exercises e JOIN exercises_programs ep ON e.id_exercise = ep.id_exercise JOIN programs p ON ep.id_program = p.id_program JOIN users_programs up ON p.id_program = up.id_program WHERE iduser=%s AND e.completed = TRUE", (user_id,))
+    data_completed_exercise = mycursor.fetchall()
+
+    mycursor.close()
+
+    all_data = 0
+
+    for exercise in data_completed_exercise:
+        all_data = int(exercise['time']) + int(exercise['distance']) + int(exercise['target_result'])
+    
+    changed_weight = all_data
+
+    return changed_weight
+
+
 
 
 if __name__ == "__main__":
