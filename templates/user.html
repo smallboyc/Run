@@ -23,9 +23,11 @@
             <p>{{program.name}}</p>
             <div class="exercise-list">
               {% for exercise in exercises %}
-              <a class="exercise-item">
+              <a
+                class="exercise-item {% if current_exercise_id == exercise.id_exercise %}active_exo{% endif %} {% if exercise.completed == true %}complete_exo{% endif %}"
+              >
                 <p>
-                  <strong>{{exercise.name}}</strong> {{exercise.description}}
+                  <strong>{{ exercise.name }}</strong> {{ exercise.description}}
                 </p>
               </a>
               {% endfor %}

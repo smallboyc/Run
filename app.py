@@ -162,8 +162,13 @@ def get_user(iduser):
             return redirect(url_for('get_user', iduser = session['user_id']))
         
         mycursor = mydb.cursor(dictionary=True)
+
+        mycursor.execute('SELECT current_exercise_id FROM users_programs WHERE iduser=%s',(iduser,))
+        result = mycursor.fetchone()
+        current_exercise_id = result['current_exercise_id'] if result else None
         mycursor.execute('SELECT iduser, firstname, surname, email FROM users WHERE iduser=%s', (iduser,))
         user = mycursor.fetchone()
+        print(current_exercise_id)
         
         if user:
             # Récupérer le programme assigné à l'utilisateur depuis la table de jointure
@@ -173,11 +178,11 @@ def get_user(iduser):
             if program:
                  progress = calculate_progress(iduser)
                  program_id = program['id_program']
-                 mycursor.execute("SELECT exercises.name, exercises.description FROM exercises JOIN exercises_programs ON exercises.id_exercise=exercises_programs.id_exercise JOIN programs ON exercises_programs.id_program=programs.id_program WHERE programs.id_program=%s LIMIT 5", (program_id,))
+                 mycursor.execute("SELECT exercises.id_exercise, exercises.name, exercises.description, exercises.completed FROM exercises JOIN exercises_programs ON exercises.id_exercise=exercises_programs.id_exercise JOIN programs ON exercises_programs.id_program=programs.id_program WHERE programs.id_program=%s LIMIT 5", (program_id,))
                  exercises = mycursor.fetchall()
                  mycursor.close()
                  if exercises:
-                    return render_template('user.html', user=user, program=program, progress = progress, exercises = exercises)
+                    return render_template('user.html', user=user, program=program, progress = progress, exercises = exercises, current_exercise_id = current_exercise_id)
             else:
                 return render_template('error.html', message="Aucun programme assigné à cet utilisateur.")
         else:

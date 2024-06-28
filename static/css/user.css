@@ -1,220 +1,229 @@
 img {
-    width: 200px; /* Reduced width */
+  width: 200px; /* Reduced width */
 }
 
 body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    height: 100vh; /* Adjusted height */
-    background-color: #f0f0f0;
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; /* Adjusted height */
+  background-color: #f0f0f0;
 }
 
 .container {
-    width: 90%; /* Reduced width */
-    max-width: 800px; /* Reduced max-width */
-    background-color: #fff;
-    padding: 10px; /* Reduced padding */
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    border-radius: 10px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-top: 20px; /* Reduced margin */
-    flex-wrap: wrap;
+  width: 90%; /* Reduced width */
+  max-width: 800px; /* Reduced max-width */
+  background-color: #fff;
+  padding: 10px; /* Reduced padding */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 20px; /* Reduced margin */
+  flex-wrap: wrap;
 }
 
 .header {
-    width: 100%;
-    text-align: center;
-    margin-bottom: 15px; /* Reduced margin */
+  width: 100%;
+  text-align: center;
+  margin-bottom: 15px; /* Reduced margin */
 }
 
 .header h1 {
-    margin: 0;
-    font-size: 20px; /* Reduced font size */
+  margin: 0;
+  font-size: 20px; /* Reduced font size */
 }
 
 .main-content {
-    display: flex;
-    width: 100%;
-    justify-content: space-between;
-    flex-wrap: wrap; /* Ensures responsive behavior */
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  flex-wrap: wrap; /* Ensures responsive behavior */
 }
 
 .panel {
-    width: 100%;
-    max-width: 400px; /* Added max-width */
-    background-color: #f9f9f9;
-    padding: 10px; /* Reduced padding */
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    text-align: center;
-    box-sizing: border-box;
-    margin-bottom: 10px; /* Added margin for spacing */
+  width: 100%;
+  max-width: 400px; /* Added max-width */
+  background-color: #f9f9f9;
+  padding: 10px; /* Reduced padding */
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  text-align: center;
+  box-sizing: border-box;
+  margin-bottom: 10px; /* Added margin for spacing */
 }
 
 .left-panel ul {
-    list-style-type: none;
-    padding: 0;
+  list-style-type: none;
+  padding: 0;
 }
 
 .left-panel ul li {
-    background-color: #e9ecef;
-    margin: 5px 0; /* Reduced margin */
-    padding: 10px; /* Reduced padding */
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
+  background-color: #e9ecef;
+  margin: 5px 0; /* Reduced margin */
+  padding: 10px; /* Reduced padding */
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
 .left-panel ul li:hover {
-    background-color: #d1d3d4;
+  background-color: #d1d3d4;
 }
 
 .left-panel ul li:active {
-    background-color: #b9bbbc;
+  background-color: #b9bbbc;
 }
 
 .button {
-    background-color: #011837;
-    color: white;
-    padding: 8px 16px; /* Reduced padding */
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    width: 180px; /* Reduced width */
-    margin-top: 10px; /* Reduced margin */
+  background-color: #011837;
+  color: white;
+  padding: 8px 16px; /* Reduced padding */
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  width: 180px; /* Reduced width */
+  margin-top: 10px; /* Reduced margin */
 }
 
 .button:hover {
-    background-color: #01356d;
+  background-color: #01356d;
 }
 
 .button:active {
-    background-color: #011837;
+  background-color: #011837;
 }
 
 .button.secondary {
-    background-color: #e2e2e2;
-    color: #011837;
-    padding: 8px 16px; /* Reduced padding */
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    width: 180px; /* Reduced width */
-    margin-top: 10px; /* Reduced margin */
+  background-color: #e2e2e2;
+  color: #011837;
+  padding: 8px 16px; /* Reduced padding */
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  width: 180px; /* Reduced width */
+  margin-top: 10px; /* Reduced margin */
 }
 
 .button.secondary:hover {
-    background-color: #f0f0f0;
+  background-color: #f0f0f0;
 }
 
 .button.secondary:active {
-    background-color: #e2e2e2;
+  background-color: #e2e2e2;
 }
 
 .right-panel {
-    display: flex;
-    flex-direction: column;
-    gap: 10px; /* Reduced gap */
-    align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: 10px; /* Reduced gap */
+  align-items: center;
 }
 
 .progress-section {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 10px; /* Reduced gap */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px; /* Reduced gap */
 }
 
 .progress-circle {
-    position: relative;
-    width: 100px; /* Reduced width */
-    height: 100px; /* Reduced height */
+  position: relative;
+  width: 100px; /* Reduced width */
+  height: 100px; /* Reduced height */
 }
 
 .progress-ring {
-    transform: rotate(-90deg);
+  transform: rotate(-90deg);
 }
 
 .progress-ring__circle {
-    transition: 0.35s stroke-dashoffset;
-    transform: rotate(-90deg);
-    transform-origin: 50% 50%;
+  transition: 0.35s stroke-dashoffset;
+  transform: rotate(-90deg);
+  transform-origin: 50% 50%;
 }
 
 .progress-text {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 20px; /* Reduced font size */
-    font-weight: bold;
-    color: #28a745;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 20px; /* Reduced font size */
+  font-weight: bold;
+  color: #28a745;
 }
 
 .next-exercise-section {
-    width: 100%;
-    text-align: center;
+  width: 100%;
+  text-align: center;
 }
 
 .update-progress-button {
-    width: 180px; /* Reduced width */
+  width: 180px; /* Reduced width */
 }
 
 .buttons {
-    display: flex;
-    width: 75%; /* Adjusted width */
-    justify-content: space-between;
-    flex-wrap: wrap; /* Ensures responsive behavior */
+  display: flex;
+  width: 75%; /* Adjusted width */
+  justify-content: space-between;
+  flex-wrap: wrap; /* Ensures responsive behavior */
 }
 
 @media (max-width: 768px) {
-    .main-content {
-        flex-direction: column;
-        align-items: center;
-    }
-    .panel {
-        width: 100%;
-        margin: 10px; /* Reduced margin */
-    }
+  .main-content {
+    flex-direction: column;
+    align-items: center;
+  }
+  .panel {
+    width: 100%;
+    margin: 10px; /* Reduced margin */
+  }
 }
 
 .exercise-list {
-    width: 100%;
-    max-width: 400px; /* Reduced max-width */
+  width: 100%;
+  max-width: 400px; /* Reduced max-width */
 }
 
 .exercise-item {
-    display: block;
-    background-color: rgb(219, 217, 217);
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    padding: 0.2px; /* Reduced padding */
-    margin-bottom: 10px; /* Reduced margin */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    text-decoration: none; /* Remove underline from links */
-    color: black; /* Set text color */
-    transition: transform 0.3s, box-shadow 0.3s;
+  display: block;
+  background-color: rgb(219, 217, 217);
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 0.2px; /* Reduced padding */
+  margin-bottom: 10px; /* Reduced margin */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  text-decoration: none; /* Remove underline from links */
+  color: black; /* Set text color */
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.active_exo {
+  background-color: #011837;
+  color: rgb(219, 217, 217);
+}
+
+.complete_exo {
+  background-color: #7ce138;
 }
 
 .exercise-in-progress {
-    display: block;
-    background-color: rgb(255, 255, 255);
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    padding: 0.2px; /* Reduced padding */
-    margin-bottom: 10px; /* Reduced margin */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    text-decoration: none; /* Remove underline from links */
-    color: black; /* Set text color */
-    transition: transform 0.3s, box-shadow 0.3s;
+  display: block;
+  background-color: rgb(255, 255, 255);
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 0.2px; /* Reduced padding */
+  margin-bottom: 10px; /* Reduced margin */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  text-decoration: none; /* Remove underline from links */
+  color: black; /* Set text color */
+  transition: transform 0.3s, box-shadow 0.3s;
 }
