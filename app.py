@@ -16,23 +16,29 @@ mydb = mysql.connector.connect(
     database=config.Config.DB_NAME
 )
 
+def is_logged_in():
+    return 'user_id' in session
+
+def is_authorized(iduser):
+    return is_logged_in() and session['user_id'] == iduser
+
 # Accueil
 @app.route('/')
 def root():
     return render_template('index.html')
 
 
-# Enregistrement
+#Affichage de la page Register
 @app.route('/register')
 def register():
-    return render_template('register.html')
+    return render_template('register.html', message = request.args.get('message'))
 
-
+#Affichage de la page Log in
 @app.route('/login')
 def login():
     return render_template('login.html')
 
-
+#On détermine si le user se log correctement.
 @app.route('/login_user', methods =['POST'])
 def login_user():
     mycursor = mydb.cursor(dictionary=True)
@@ -47,10 +53,10 @@ def login_user():
         session['user_email'] = user['email']
         return redirect(url_for('get_user', iduser=user['iduser']))
     else:
-        return redirect(url_for('register'))
+        return redirect(url_for('register', message="Connexion impossible. Enregistrez-vous !"))
 
         
-
+#On détermine si le user s'est enregistré correctement, si oui -> questionnaire
 @app.route('/register_user', methods=['GET', 'POST'])
 def register_user():
     firstname = request.form["firstname"]
@@ -79,18 +85,84 @@ def register_user():
     session['user_id'] = user_id
     mycursor.close()
     print("Utilisateur inséré avec succès")
-    return redirect(url_for('complete_user'))
+    return redirect(url_for('complete_user', message="Bienvenue! Allez, encore un effort :)", iduser = user_id))
 
+@app.route('/users/<int:iduser>/questions')
+def complete_user(iduser):
+    if not is_authorized(iduser):
+            return redirect(url_for('complete_user', iduser = session['user_id']))
+    return render_template('questions.html', message = request.args.get('message'), iduser = iduser)
 
-@app.route('/users/questions')
-def complete_user():
-    return render_template('questions.html')
+#Quand le user a répondu au questionnaire
+@app.route('/users/<int:iduser>/questionnaire', methods=['POST'])
+def questions(iduser):
+    if not is_authorized(iduser):
+            return redirect(url_for('questions', iduser = session['user_id']))
+    
+    weight = request.form["weight"]
+    height = request.form["height"]
+    animal = request.form["animal"]
+
+    
+    mycursor = mydb.cursor()
+    sql = "UPDATE users SET weight=%s, height=%s, animal=%s WHERE iduser=%s"
+    val = (weight, height, animal, iduser) 
+
+    mycursor.execute(sql, val)
+    mydb.commit()
+    mycursor.close()
+
+    return redirect(url_for('programs', iduser=iduser))
      
 
-@app.route('/users/<iduser>')
-def get_user(iduser):
+#Liste des programmes disponibles
+@app.route('/users/<int:iduser>/programs')
+def programs(iduser):
+    if not is_authorized(iduser):
+            return redirect(url_for('programs', iduser = session['user_id']))
+    
+    mycursor = mydb.cursor(dictionary=True)
+    mycursor.execute("SELECT id_program, name, description FROM programs")
+    programs = mycursor.fetchall()
+    mycursor.close()
+    return render_template('programmes.html', programs=programs, iduser=iduser)
+
+
+#Connecte le user avec le programme (table de jonction)
+@app.route('/users/<int:iduser>/assign/<int:id_program>')
+def assign_program(iduser, id_program):
+        if not is_authorized(iduser):
+            return redirect(url_for('programs', iduser = session['user_id']))
+         
         mycursor = mydb.cursor(dictionary=True)
-        mycursor.execute('SELECT firstname, surname, email FROM users WHERE iduser=%s', (iduser,))
+
+        # Récupérer le premier exercice du programme
+        mycursor.execute("SELECT e.id_exercise FROM exercises e JOIN exercises_programs ep ON e.id_exercise = ep.id_exercise WHERE ep.id_program = %s ORDER BY e.id_exercise ASC LIMIT 1" , (id_program,))
+        first_exercise = mycursor.fetchone()
+    
+        if first_exercise:
+            first_exercise_id = first_exercise['id_exercise']
+        else:
+            first_exercise_id = None
+
+        # Insérez les données dans votre table de jointure
+        mycursor.execute("INSERT INTO users_programs (iduser, id_program, current_exercise_id) VALUES (%s, %s, %s)", (iduser, id_program,first_exercise_id))
+        mydb.commit()
+    
+        mycursor.close()
+        return redirect(url_for('get_user', iduser=iduser))
+
+
+     
+
+#Affiche l'utilisateur et ses propriétés (programme et exercices)
+@app.route('/users/<int:iduser>')
+def get_user(iduser):
+        if not is_authorized(iduser):
+            return redirect(url_for('get_user', iduser = session['user_id']))
+        
+        mycursor = mydb.cursor(dictionary=True)
+        mycursor.execute('SELECT iduser, firstname, surname, email FROM users WHERE iduser=%s', (iduser,))
         user = mycursor.fetchone()
         
         if user:
@@ -122,91 +194,131 @@ def get_user(iduser):
     
 
 
-
-@app.route('/users/questionnaire', methods=['POST'])
-def questions():
-    weight = request.form["weight"]
-    height = request.form["height"]
-    animal = request.form["animal"]
-
-    user_id = session.get('user_id')
+#Page pour modifier les données du user
+@app.route('/users/<int:iduser>/edit', methods=['GET', 'POST'])
+def edit_user(iduser):
+    if not is_authorized(iduser):
+        return redirect(url_for('edit_user', iduser = session['user_id']))
     
-    mycursor = mydb.cursor()
-    sql = "UPDATE users SET weight=%s, height=%s, animal=%s WHERE iduser=%s"
-    val = (weight, height, animal, user_id) 
-
-    mycursor.execute(sql, val)
-    mydb.commit()
-    mycursor.close()
-
-    return redirect(url_for('programs', iduser=user_id))
-     
-
-#Liste des programmes disponibles
-@app.route('/users/<int:iduser>/programs')
-def programs(iduser):
     mycursor = mydb.cursor(dictionary=True)
-    mycursor.execute("SELECT id_program, name, description FROM programs")
-    programs = mycursor.fetchall()
-    mycursor.close()
-    return render_template('programmes.html', programs=programs, iduser=iduser)
+    
+    if request.method == 'GET':
+        # Récupérer les informations de l'utilisateur
+        mycursor.execute('SELECT iduser, firstname, surname, email FROM users WHERE iduser=%s', (iduser,))
+        user = mycursor.fetchone()
+        # Récupérer l'id du programme du user 
+        mycursor.execute('SELECT * FROM programs JOIN users_programs ON programs.id_program=users_programs.id_program WHERE iduser=%s', (iduser,))
+        user_program = mycursor.fetchone()
+        # Récupère tous les programmes
+        mycursor.execute('SELECT * FROM programs')
+        programs = mycursor.fetchall()
+        mycursor.close()
 
+        # Affiche les données actuelles du user
+        return render_template('edit_user.html', user=user, programs=programs, user_program=user_program, iduser=iduser)
 
-#Connecte le user avec le programme (table de jonction)
-@app.route('/users/<int:iduser>/assign/<int:id_program>')
-def assign_program(iduser, id_program):
-        mycursor = mydb.cursor()
-        mycursor.execute("INSERT INTO users_programs (iduser, id_program) VALUES (%s, %s)", (iduser, id_program))
+    elif request.method == 'POST':
+        # Récupérer les données du formulaire
+        firstname = request.form['firstname']
+        surname = request.form['surname']
+        email = request.form['email']
+        id_program = request.form['id_program']
+
+        # Mettre à jour les informations du user
+        mycursor.execute("UPDATE users SET firstname=%s, surname=%s, email=%s WHERE iduser=%s", (firstname, surname, email, iduser))
+        # Mettre à jour le programme du user
+        mycursor.execute("UPDATE users_programs SET id_program=%s WHERE iduser=%s", (id_program, iduser))
+        
         mydb.commit()
         mycursor.close()
         return redirect(url_for('get_user', iduser=iduser))
 
-
-@app.route('/users/show_exercise/<int:id_exercice>')
-def show_exercise(id_exercise):
+    
+#Affiche l'exercice actuel
+@app.route('/users/<int:iduser>/current_exercise')
+def current_exercise(iduser):
+    if not is_authorized(iduser):
+        return redirect(url_for('login'))
 
     mycursor = mydb.cursor(dictionary=True)
+    mycursor.execute('''
+        SELECT *
+        FROM exercises e 
+        JOIN users_programs up ON e.id_exercise = up.current_exercise_id 
+        WHERE up.iduser = %s
+    ''', (iduser,))
+    exercise = mycursor.fetchone()
 
-    #Sélectionne l'exercice avec le bon id'
-    mycursor.execute("SELECT name, description, target_desc FROM exercises WHERE id_exercise=%s", (id_exercise,))
-    selected_exercise = mycursor.fetchone()
-
-    mycursor.close()
-
-    return render_template('exercices.html', selected_exercise=selected_exercise)
+    if exercise:
+        return render_template('exercise.html', exercise=exercise, iduser=iduser)
+        # return jsonify(exercise)
+    else:
+        return render_template('error.html', message="Aucun exercice disponible.", iduser=iduser)
 
 
-@app.route('/next_exercise/<int:id_exercise>', methods=['POST'])
-def next_exercise(id_exercise):
-    user_id = session.get('user_id')
 
-    mycursor = mydb.cursor()
+#Met à jour l'exercice et passe au suivant
+@app.route('/users/<int:iduser>/complete_exercise', methods=['POST'])
+def complete_exercise(iduser):
+    if not is_authorized(iduser):
+        return redirect(url_for('login'))
 
-    #Mise à jour de l'exercice
-    mycursor.execute("UPDATE exercises SET completed = TRUE WHERE id_exercise = %s" , (id_exercise,))
-
-    #Nombre d'exercices pas complétés restants
-    mycursor.execute("SELECT COUNT(*) as remaining FROM exercises e JOIN exercises_programs ep ON e.id_exercise = ep.id_exercise WHERE ep.id_program = (SELECT id_program FROM users_programs WHERE iduser = %s) AND e.completed = FALSE", (user_id,))
-    remaining_exercises = mycursor.fetchone()
-
-    #Mise à jour de l'état completed de la table program si tous les exercices sont finis
-    if remaining_exercises['remaining'] == 0:
-        mycursor.execute("UPDATE programs SET completed = TRUE WHERE id_program = (SELECT id_program FROM users_programs WHERE iduser = %s)", (user_id,))
-
-    #Sélectionne l'exercice d'après
-    mycursor.execute("SELECT e.id_exercise FROM exercises e JOIN exercises_programs ep ON e.id_exercise = ep.id_exercise WHERE ep.id_program = (SELECT id_program FROM users_programs WHERE iduser = %s) AND e.completed = FALSE ORDER BY e.id_exercise LIMIT 1", (user_id,))
+    exercise_id = request.form['exercise_id']
+    mycursor = mydb.cursor(dictionary=True)
+    mycursor.execute('UPDATE exercises SET completed = TRUE WHERE id_exercise = %s', (exercise_id,))
+    
+    # Récupérer le prochain exercice
+    mycursor.execute('''
+        SELECT e.id_exercise
+        FROM exercises e
+        JOIN exercises_programs ep ON e.id_exercise = ep.id_exercise
+        JOIN users_programs up ON ep.id_program = up.id_program
+        WHERE up.iduser = %s AND e.id_exercise > %s
+        ORDER BY e.id_exercise ASC
+        LIMIT 1
+    ''', (iduser, exercise_id))
     next_exercise = mycursor.fetchone()
 
-    mydb.commit()
-    mycursor.close() 
-
-    #Vérifie si il reste des exercices à faire
     if next_exercise:
-        return redirect(url_for('show_exercise', id_exercise=next_exercise['id_exercise']))
+        next_exercise_id = next_exercise['id_exercise']
     else:
-        return redirect(url_for('get_user', iduser=user_id))
+        next_exercise_id = None
+
+    # Mettre à jour le current_exercise_id pour l'utilisateur
+    mycursor.execute('UPDATE users_programs SET current_exercise_id = %s WHERE iduser = %s', (next_exercise_id, iduser))
+    
+    mydb.commit()
+    mycursor.close()
+
+    return redirect(url_for('get_user', iduser=iduser))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#Affichage l'exercice en cours
 
 def calculate_progress(user_id):
+    if not is_authorized(user_id):
+        return redirect(url_for('login'))
+    
     mycursor = mydb.cursor(dictionary=True)
     
     # Nombre total d'exercices dans le programme de l'utilisateur

@@ -11,17 +11,18 @@
     />
   </head>
   <body>
+    <img src="../static/img/Logo_Bleu.svg" alt="" />
     <!-- <img src="../static/img/Logo_Bleu.svg" alt="" /> -->
     <section class="container">
       <h1>Questionnaire</h1>
-      <form action="/users/questionnaire" method="post">
+      <form action="{{ url_for('questions', iduser=iduser) }}" method="post">
         <div class="input-group">
           <label class="champs" for="weight">Poids :</label>
-          <input type="text" name="weight" id="weight" required />
+          <input type="number" name="weight" id="weight" maxlength="3" required />
         </div>
         <div class="input-group">
           <label class="champs" for="height">Taille :</label>
-          <input type="text" name="height" id="height" required />
+          <input type="number" name="height" id="height" maxlength="3" required />
         </div>
         <div class="input-group">
           <label class="champs" for="animal">Animal Préféré :</label>
@@ -32,5 +33,10 @@
         </div>
       </form>
     </section>
+    {% if message %}
+    <div class="welcome_message">
+      <p>{{message}}</p>
+    </div>
+    {% endif %}
   </body>
 </html>
