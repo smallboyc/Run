@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Exercice</title>
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{{ url_for('static', filename='css/exercices.css') }}"
+    />
+  </head>
+  <body>
+    <a href="{{ url_for('root') }}"><img src="../static/img/Logo_Bleu.svg" alt="" /></a>
+    <div class="container">
+      <h2>Exercice</h2>
+      <div class="header">
+        <div class="exercise-title">
+          <h3>{{ exercise.name }}</h3>
+        </div>
+        <p>{{ exercise.description }}</p>
+      </div>
+      <form
+        action="{{ url_for('complete_exercise', iduser=iduser) }}"
+        method="POST"
+        class="inputs"
+      >
+        <input
+          type="hidden"
+          name="exercise_id"
+          value="{{ exercise.id_exercise }}"
+        />
+        {% if exercise.time is not none %}
+        <div class="input-group">
+          <label for="time">Temps (min) </label>
+          <input type="number" id="time" name="time" class="input" required />
+        </div>
+        {% endif %} {% if exercise.distance is not none %}
+        <div class="input-group">
+          <label for="distance">Distance (m) </label>
+          <input
+            type="number"
+            id="distance"
+            name="distance"
+            class="input"
+            required
+          />
+        </div>
+        {% endif %} {% if exercise.target_desc is not none %}
+        <div class="input-group">
+          <label for="target_desc">{{ exercise.target_desc }}</label>
+          <input
+            type="number"
+            id="target_result"
+            name="target_result"
+            class="input"
+            required
+          />
+        </div>
+        {% endif %}
+      <div class="buttons">
+        <input class="button" type="submit" value="Valider" />
+        <button
+          onclick="location.href='{{ url_for('get_user', iduser=iduser) }}'"
+          class="button secondary"
+        >
+          Return
+        </button>
+      </form>
+      </div>
+    </div>
+  </body>
+</html>
