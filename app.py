@@ -53,7 +53,7 @@ def login_user():
         session['user_email'] = user['email']
         return redirect(url_for('get_user', iduser=user['iduser']))
     else:
-        return redirect(url_for('register', message="Connexion impossible. Enregistrez-vous !"))
+        return render_template('error.html', message="E-mail ou mot de passe incorrect :(")
 
         
 #On détermine si le user s'est enregistré correctement, si oui -> questionnaire
