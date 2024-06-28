@@ -61,20 +61,15 @@
           />
         </div>
         {% endif %}
-      </form>
       <div class="buttons">
-        <button
-          class="button"
-          onclick="document.querySelector('form').submit()"
-        >
-          Done
-        </button>
+        <input class="button" type="submit" value="Valider" />
         <button
           onclick="location.href='{{ url_for('get_user', iduser=iduser) }}'"
           class="button secondary"
         >
           Return
         </button>
+      </form>
       </div>
     </div>
   </body>

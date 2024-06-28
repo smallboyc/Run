@@ -156,27 +156,32 @@ def assign_program(iduser, id_program):
 #Affiche l'utilisateur et ses propriétés (programme et exercices)
 @app.route('/users/<int:iduser>')
 def get_user(iduser):
-    if not is_authorized(iduser):
-        return redirect(url_for('get_user', iduser = session['user_id']))
+        if not is_authorized(iduser):
+            return redirect(url_for('get_user', iduser = session['user_id']))
+        
+        mycursor = mydb.cursor(dictionary=True)
 
-    mycursor = mydb.cursor(dictionary=True)
-    mycursor.execute('SELECT iduser, firstname, surname, email FROM users WHERE iduser=%s', (iduser,))
-    user = mycursor.fetchone()
-
-    if user:
-        # Récupérer le programme assigné à l'utilisateur depuis la table de jointure
-        mycursor.execute("SELECT p.name, p.id_program FROM programs p JOIN users_programs up ON p.id_program=up.id_program JOIN users u ON up.iduser=u.iduser WHERE u.iduser=%s",(iduser,))
-        program = mycursor.fetchone()
-
-        if program:
-            progress = calculate_progress(iduser)
-            program_id = program['id_program']
-            mycursor.execute("SELECT exercises.name, exercises.description FROM exercises JOIN exercises_programs ON exercises.id_exercise=exercises_programs.id_exercise JOIN programs ON exercises_programs.id_program=programs.id_program WHERE programs.id_program=%s LIMIT 5", (program_id,))
-            exercises = mycursor.fetchall()
-            mycursor.close()
-            if exercises:
-                changed_weight = calculate_weight(iduser)
-                return render_template('user.html', user=user, program=program, progress = progress, changed_weight = changed_weight, exercises = exercises)
+        mycursor.execute('SELECT current_exercise_id FROM users_programs WHERE iduser=%s',(iduser,))
+        result = mycursor.fetchone()
+        current_exercise_id = result['current_exercise_id'] if result else None
+        mycursor.execute('SELECT iduser, firstname, surname, email FROM users WHERE iduser=%s', (iduser,))
+        user = mycursor.fetchone()
+        print(current_exercise_id)
+        
+        if user:
+            # Récupérer le programme assigné à l'utilisateur depuis la table de jointure
+            mycursor.execute("SELECT p.name, p.id_program FROM programs p JOIN users_programs up ON p.id_program=up.id_program JOIN users u ON up.iduser=u.iduser WHERE u.iduser=%s",(iduser,))
+            program = mycursor.fetchone()
+            
+            if program:
+                 progress = calculate_progress(iduser)
+                 program_id = program['id_program']
+                 mycursor.execute("SELECT exercises.id_exercise, exercises.name, exercises.description, exercises.completed FROM exercises JOIN exercises_programs ON exercises.id_exercise=exercises_programs.id_exercise JOIN programs ON exercises_programs.id_program=programs.id_program WHERE programs.id_program=%s LIMIT 5", (program_id,))
+                 exercises = mycursor.fetchall()
+                 mycursor.close()
+                 if exercises:
+                    changed_weight = calculate_weight(iduser)
+                    return render_template('user.html', user=user, program=program, progress = progress, changed_weight = changed_weight, exercises = exercises, current_exercise_id = current_exercise_id)
             else:
                 return render_template('error.html', message="Aucun programme assigné à cet utilisateur.")
         else:
@@ -256,6 +261,11 @@ def complete_exercise(iduser):
     exercise_id = request.form['exercise_id']
     mycursor = mydb.cursor(dictionary=True)
     mycursor.execute('UPDATE exercises SET completed = TRUE WHERE id_exercise = %s', (exercise_id,))
+
+    time = request.form["time"]
+    distance = request.form["distance"]
+    target_result = request.form["target_result"]
+    mycursor.execute('UPDATE exercises SET time = %s, distance = %s, target_result = %s WHERE id_exercise = %s', (time, distance, target_result, exercise_id,))
     
     # Récupérer le prochain exercice
     mycursor.execute('''
@@ -268,7 +278,7 @@ def complete_exercise(iduser):
         LIMIT 1
     ''', (iduser, exercise_id))
     next_exercise = mycursor.fetchone()
-
+    
     if next_exercise:
         next_exercise_id = next_exercise['id_exercise']
     else:
@@ -325,7 +335,7 @@ def calculate_weight(user_id):
     for exercise in data_completed_exercise:
         all_data = int(exercise['time']) + int(exercise['distance']) + int(exercise['target_result'])
     
-    changed_weight = all_data
+    changed_weight =  weight - all_data*0.009
 
     return changed_weight
 
