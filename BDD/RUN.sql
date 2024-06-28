@@ -62,9 +62,11 @@ USE `mydb` ;
 CREATE TABLE users_programs (
     iduser INT,
     id_program INT,
+    current_exercise_id INT DEFAULT NULL,
     PRIMARY KEY (iduser, id_program),
     FOREIGN KEY (iduser) REFERENCES users(iduser),
-    FOREIGN KEY (id_program) REFERENCES programs(id_program)
+    FOREIGN KEY (id_program) REFERENCES programs(id_program),
+    FOREIGN KEY (current_exercise_id) REFERENCES exercises(id_exercise)
 );
 
 CREATE TABLE exercises_programs (
@@ -83,7 +85,7 @@ INSERT INTO exercises (name, description, time, distance, target_desc, target_re
 ('Lynx', 'Cligner des yeux le plus de fois possible en 1min.', 0, 0, 'durée de la course', 0, false),
 ('Taureau', 'Cours après chaque personne habillée en rouge que tu croises, le plus de fois possible', 0, 0, 'nombre de personnes suivies', 0, false),
 ('Rhinocéros', 'Faire le plus de squats en tenant en équilibre un objet sur votre nez.', 0, 0, 'nombre de squats', 0, false),
-('Lyon', 'Finir un paquet de céréale Lion le plus vite possible', 0, 0, 'temps d ingurgitation', 0, false),
+('Lion', 'Finir un paquet de céréale Lion le plus vite possible', 0, 0, 'temps d ingurgitation', 0, false),
 ('Tigre', 'Arrache le plus de plumes possible de ton oreiller avec tes ongles en 1 minutes', 0, 0, 'nombre de plumes arrachées', 0, false),
 ('Ours', 'Gifler un maximum de personnes en 2 minutes', 0, 0, 'nombre de personnes giflées', 0, false),
 ('Loup', 'Courir le plus loin possible en meute avec tes potes', 0, 0, 'nombre de potes', 0, false),
